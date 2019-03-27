@@ -1,4 +1,13 @@
-{ aluno: Rodrigo Paula da Silva }
+{ aluno: Rodrigo Paula 
+
+da Silva}}
+
+10.3
+3e10
+3 <> 5
+3 <= 5
+3 >= 5
+!(3 >= 5)
 
 inteiro: tamanho
 tamanho:= 10
