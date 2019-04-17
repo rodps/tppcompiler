@@ -36,7 +36,6 @@ reserved = {
     'flutuante' : 'FLUTUANTE',
     'leia' : 'LEIA',
     'escreva' : 'ESCREVA',
-    'retorna' : 'RETORNA',
     'vazio' : 'VAZIO',
     'se' : 'SE',
     'então' : 'ENTAO',
@@ -92,14 +91,19 @@ def t_error(t):
 
 lexer = lex.lex()
 
-arq_code = open(sys.argv[1], 'r')
- 
-# Give the lexer some input
-lexer.input(arq_code.read())
- 
-# # Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # No more input
-    print(tok.lineno, tok.type)
+try:
+    arq_code = open(sys.argv[1], 'r')
+    
+    # Give the lexer some input
+    lexer.input(arq_code.read())
+
+    # # Tokenize
+    while True:
+        tok = lexer.token()
+        if not tok: 
+            break      # No more input
+        print(tok.lineno, tok.type)
+except IOError:
+    print("Arquivo não encontrado")
+finally:
+    arq_code.close()
