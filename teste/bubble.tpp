@@ -1,13 +1,6 @@
 { aluno: Rodrigo Paula 
 
-da Silva}}
-
-10.3
-3e10
-3 <> 5
-3 <= 5
-3 >= 5
-!(3 >= 5)
+da Silva}
 
 inteiro: tamanho
 tamanho:= 10
@@ -38,11 +31,7 @@ inteiro principal()
 	repita
 		leia(array[i])
 		i:= i+1
-	até  i == tamanho
+	até i == tamanho
 	escreva(bubbleSort(array, tamanho))
 	retorna(0)
 fim
-
-				
-			
-	

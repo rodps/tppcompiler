@@ -1,11 +1,15 @@
 import ply.yacc as yacc
+import sys
 from scanner import tokens
+
+# dot
+# graphviz
 
 def p_programa(p):
     'programa : lista_declaracoes'
 
 def p_lista_declaracoes(p):
-    '''lista_declaracoes : lista_declaracoes declaracao'
+    '''lista_declaracoes : lista_declaracoes declaracao
                          | declaracao'''
 
 def p_declaracao(p):
@@ -22,6 +26,10 @@ def p_inicializacao_variaveis(p):
 def p_lista_variaveis(p):
     '''lista_variaveis : lista_variaveis VIRGULA var
                        | var'''
+
+def p_var(p):
+    '''var : ID 
+           | ID indice'''
 
 def p_indice(p):
     '''indice : indice ABRE_COLCHETE expressao FECHA_COLCHETE
@@ -58,8 +66,7 @@ def p_acao(p):
             | repita
             | leia
             | escreva
-            | retorna
-            | erro'''
+            | retorna'''
 
 def p_se(p):
     '''se : SE expressao ENTAO corpo FIM
@@ -69,10 +76,10 @@ def p_repita(p):
     'repita : REPITA corpo ATE expressao'
 
 def p_atribuicao(p):
-    'atribuicao : var ATRIBUICAO expressao'
+    'atribuicao : ID ATRIBUICAO expressao'
 
 def p_leia(p):
-    'leia : LEIA ABRE_PARENTESE var FECHA_PARENTESE'
+    'leia : LEIA ABRE_PARENTESE ID FECHA_PARENTESE'
 
 def p_escreva(p):
     'escreva : ESCREVA ABRE_PARENTESE expressao FECHA_PARENTESE'
@@ -130,7 +137,7 @@ def p_operador_multiplicacao(p):
 
 def p_fator(p):
     '''fator : ABRE_PARENTESE expressao FECHA_PARENTESE
-             | var
+             | ID
              | chamada_funcao
              | numero'''
 
@@ -145,24 +152,19 @@ def p_chamada_funcao(p):
 def p_lista_argumentos(p):
     '''lista_argumentos : lista_argumentos VIRGULA expressao
                         | expressao
-                        | vazio '''
+                        | empty '''
 
 def p_empty(p):
     'empty :'
     pass
 
 # Error rule for syntax errors
-def p_error(p):
-    print("Syntax error in input!")
+# def p_error(p):
+#     print("Syntax error in input!")
  
 # Build the parser
 parser = yacc.yacc()
- 
-while True:
-    try:
-        s = raw_input('calc > ')
-    except EOFError:
-        break
-    if not s: continue
-    result = parser.parse(s)
-    print(result)
+
+code = open(sys.argv[1], 'r')
+result = parser.parse(code.read())
+print(result)

@@ -1,5 +1,5 @@
 import sys
-from ply.ply import lex
+from ply import lex
 
 tokens = [
     'ID',
@@ -7,8 +7,6 @@ tokens = [
     'FECHA_PARENTESE',
     'ABRE_COLCHETE',
     'FECHA_COLCHETE',
-    'ABRE_CHAVE',
-    'FECHA_CHAVE',
     'DOIS_PONTOS',
     'MAIOR',
     'MENOR',
@@ -26,8 +24,6 @@ tokens = [
     'NUM_INT',
     'NUM_FLUT',
     'NUM_NOTACAO',
-    'COMENTARIO',
-    'PRINCIPAL',
     'VIRGULA',
     'ATRIBUICAO'
 ]
@@ -36,13 +32,13 @@ reserved = {
     'flutuante' : 'FLUTUANTE',
     'leia' : 'LEIA',
     'escreva' : 'ESCREVA',
-    'vazio' : 'VAZIO',
     'se' : 'SE',
     'então' : 'ENTAO',
     'senão' : 'SENAO',
     'repita' : 'REPITA',
     'até': 'ATE',
     'retorna': 'RETORNA',
+    'fim': 'FIM'
 }
 tokens += list(reserved.values())
 
@@ -68,7 +64,6 @@ t_NEGACAO = r'!'
 t_NUM_FLUT = r'\d+\.\d+'
 t_NUM_INT = r'\d+'
 t_NUM_NOTACAO = r'\d+(\.\d+)?e\d+'
-t_COMENTARIO = r'\{[^\}]+\}'
 t_VIRGULA = r','
 t_ATRIBUICAO = r':='
 
@@ -83,6 +78,10 @@ t_ignore  = ' \t'
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+
+def t_comment(t):
+     r'\{[^\}]+\}'
+     pass
 
 # Tratamento de erros
 def t_error(t):
