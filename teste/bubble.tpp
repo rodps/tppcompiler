@@ -20,9 +20,9 @@ bubbleSort(inteiro: arr[], inteiro: n)
 				arr[j+1] := arr[j]
 			fim
 			j:= j+1
-		até j == n-i-1
+		até j = n-i-1
 		i:= i+1
-	até i == n-1
+	até i = n-1
 fim
 
 inteiro principal()
@@ -31,7 +31,7 @@ inteiro principal()
 	repita
 		leia(array[i])
 		i:= i+1
-	até i == tamanho
+	até i = tamanho
 	escreva(bubbleSort(array, tamanho))
 	retorna(0)
 fim

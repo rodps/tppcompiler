@@ -80,8 +80,10 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_comment(t):
-     r'\{[^\}]+\}'
-     pass
+    r'\{[^\}]+\}'
+    for c in t.value:
+        if(c == '\n'): t.lexer.lineno += 1
+    pass
 
 # Tratamento de erros
 def t_error(t):
@@ -90,19 +92,16 @@ def t_error(t):
 
 lexer = lex.lex()
 
-try:
-    arq_code = open(sys.argv[1], 'r')
-    
-    # Give the lexer some input
-    lexer.input(arq_code.read())
+arq_code = open(sys.argv[1], 'r')
 
-    # # Tokenize
-    while True:
-        tok = lexer.token()
-        if not tok: 
-            break      # No more input
-        print(tok.lineno, tok.type)
-except IOError:
-    print("Arquivo não encontrado")
-finally:
-    arq_code.close()
+# Give the lexer some input
+lexer.input(arq_code.read())
+
+# # Tokenize
+while True:
+    tok = lexer.token()
+    if not tok: 
+        break      # No more input
+    print(tok.lineno, tok.type)
+
+arq_code.close()

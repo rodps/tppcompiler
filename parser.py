@@ -1,31 +1,48 @@
 import ply.yacc as yacc
 import sys
 from scanner import tokens
+from graphviz import Digraph
 
-# dot
-# graphviz
+class Node:
+    def __init__(self, name, childs=[]):
+        self.name = name
+        self.childs = childs
+    def __str__(self):
+        return self.name
 
 def p_programa(p):
     'programa : lista_declaracoes'
+    p[0] = Node('programa', [p[1]])
 
 def p_lista_declaracoes(p):
     '''lista_declaracoes : lista_declaracoes declaracao
                          | declaracao'''
+    if(len(p) > 2):
+        p[0] = Node('lista_declaracoes', [p[1], p[2]])
+    else:
+        p[0] = Node('lista_declaracoes', [p[1]])
 
 def p_declaracao(p):
     '''declaracao : declaracao_variaveis
                   | inicializacao_variaveis
                   | declaracao_funcao'''
+    p[0] = Node('declaracao', [p[1]])
 
 def p_declaracao_variaveis(p):
     'declaracao_variaveis : tipo DOIS_PONTOS lista_variaveis'
+    p[0] = Node('declaracao_variaveis', [p[1], p[2], p[3]])
 
 def p_inicializacao_variaveis(p):
     'inicializacao_variaveis : atribuicao'
+    p[0] = Node('inicializacao_variaveis', [p[1]])
 
 def p_lista_variaveis(p):
     '''lista_variaveis : lista_variaveis VIRGULA var
                        | var'''
+    if(len(p) > 2):
+        p[0] = Node('lista_variaveis', [p[1], p[2], p[3]])
+    else:
+        p[0] = Node('lista_variaveis', [p[1]])
 
 def p_var(p):
     '''var : ID 
@@ -76,10 +93,10 @@ def p_repita(p):
     'repita : REPITA corpo ATE expressao'
 
 def p_atribuicao(p):
-    'atribuicao : ID ATRIBUICAO expressao'
+    'atribuicao : var ATRIBUICAO expressao'
 
 def p_leia(p):
-    'leia : LEIA ABRE_PARENTESE ID FECHA_PARENTESE'
+    'leia : LEIA ABRE_PARENTESE var FECHA_PARENTESE'
 
 def p_escreva(p):
     'escreva : ESCREVA ABRE_PARENTESE expressao FECHA_PARENTESE'
@@ -137,7 +154,7 @@ def p_operador_multiplicacao(p):
 
 def p_fator(p):
     '''fator : ABRE_PARENTESE expressao FECHA_PARENTESE
-             | ID
+             | var
              | chamada_funcao
              | numero'''
 
@@ -158,13 +175,14 @@ def p_empty(p):
     'empty :'
     pass
 
-# Error rule for syntax errors
-# def p_error(p):
-#     print("Syntax error in input!")
- 
+def p_error(p):
+    if p:
+        print("Syntax error: '%s' na linha %d" % (p.value, p.lineno))
+    else:
+        print("Syntax error at EOF")
+
 # Build the parser
 parser = yacc.yacc()
 
 code = open(sys.argv[1], 'r')
-result = parser.parse(code.read())
-print(result)
+parser.parse(code.read())
