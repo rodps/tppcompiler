@@ -14,27 +14,33 @@ from graphviz import Digraph
 # print(dot.source)
 # dot.render('test-output/round-table.gv', view=True)
 
-
-def makeTree(node):
-    dot = Digraph(comment='teste')
-    dot.node(node.name)
-    __makeTree(node, dot)
-    print(dot.source)
-    dot.render('test-output/round-table.gv', view=True)
-
-# utilizar IDs para nao repetir
-
-def __makeTree(node, dot):
-    for child in node.childs:
-        if(child == None): break;
-        if hasattr(child, 'name'):
-            dot.node(child.name)
-            dot.edge(node.name, child.name)
-            __makeTree(child, dot)
-        else:
+def printTree(root):
+    if(root == None):
+        return
+    print("pai: ", root)
+    for child in root.childs:
             print(child)
-            dot.node(child)
-            dot.edge(node.name, child)
+    for child in root.childs:
+        if(isinstance(child, Node)):
+            printTree(child)
+
+def makeGraph(dot, parent, id=0):
+    print("pai: " + parent.name)
+    if(id == 0):
+        dot.node(str(id), parent.name)
+    c = id
+    for child in parent.childs:
+        c += 1
+        if(isinstance(child, Node)):
+            dot.node(str(c), child.name)
+            print(child.name)
+        else:
+            dot.node(str(c), child)
+            print(child)
+        dot.edge(str(id), str(c))
+        if(isinstance(child, Node)):
+            c = makeGraph(dot, child, c)
+    return c + 1
 
 class Node:
     def __init__(self, name, childs=[]):
@@ -44,11 +50,9 @@ class Node:
     def __str__(self):
         return self.name
         
-
 def p_programa(p):
     'programa : lista_declaracoes'
     p[0] = Node('programa', p[1:])
-    makeTree(p[0])
 
 def p_lista_declaracoes(p):
     '''lista_declaracoes : lista_declaracoes declaracao
@@ -245,4 +249,8 @@ def p_error(p):
 parser = yacc.yacc()
 
 code = open(sys.argv[1], 'r')
-parser.parse(code.read())
+r = parser.parse(code.read())
+# printTree(r)
+dot = Digraph()
+makeGraph(dot, r)
+dot.render('test-output/round-table.gv', view=True)

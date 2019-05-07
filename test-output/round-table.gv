@@ -1,1182 +1,497 @@
-// teste
 digraph {
-	programa
-	lista_declaracoes
-	programa -> lista_declaracoes
-	lista_declaracoes
-	lista_declaracoes -> lista_declaracoes
-	lista_declaracoes
-	lista_declaracoes -> lista_declaracoes
-	lista_declaracoes
-	lista_declaracoes -> lista_declaracoes
-	lista_declaracoes
-	lista_declaracoes -> lista_declaracoes
-	declaracao
-	lista_declaracoes -> declaracao
-	declaracao_variaveis
-	declaracao -> declaracao_variaveis
-	tipo
-	declaracao_variaveis -> tipo
-	inteiro
-	tipo -> inteiro
-	":"
-	declaracao_variaveis -> ""
-	lista_variaveis
-	declaracao_variaveis -> lista_variaveis
-	var
-	lista_variaveis -> var
-	tamanho
-	var -> tamanho
-	declaracao
-	lista_declaracoes -> declaracao
-	inicializacao_variaveis
-	declaracao -> inicializacao_variaveis
-	atribuicao
-	inicializacao_variaveis -> atribuicao
-	var
-	atribuicao -> var
-	tamanho
-	var -> tamanho
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	10
-	numero -> 10
-	declaracao
-	lista_declaracoes -> declaracao
-	declaracao_variaveis
-	declaracao -> declaracao_variaveis
-	tipo
-	declaracao_variaveis -> tipo
-	inteiro
-	tipo -> inteiro
-	":"
-	declaracao_variaveis -> ""
-	lista_variaveis
-	declaracao_variaveis -> lista_variaveis
-	var
-	lista_variaveis -> var
-	array
-	var -> array
-	indice
-	var -> indice
-	"["
-	indice -> "["
-	expressao
-	indice -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	tamanho
-	var -> tamanho
-	"]"
-	indice -> "]"
-	declaracao
-	lista_declaracoes -> declaracao
-	declaracao_funcao
-	declaracao -> declaracao_funcao
-	cabecalho
-	declaracao_funcao -> cabecalho
-	bubbleSort
-	cabecalho -> bubbleSort
-	"("
-	cabecalho -> "("
-	lista_parametros
-	cabecalho -> lista_parametros
-	lista_parametros
-	lista_parametros -> lista_parametros
-	parametro
-	lista_parametros -> parametro
-	parametro
-	parametro -> parametro
-	tipo
-	parametro -> tipo
-	inteiro
-	tipo -> inteiro
-	":"
-	parametro -> ""
-	arr
-	parametro -> arr
-	"["
-	parametro -> "["
-	"]"
-	parametro -> "]"
-	","
-	lista_parametros -> ","
-	parametro
-	lista_parametros -> parametro
-	tipo
-	parametro -> tipo
-	inteiro
-	tipo -> inteiro
-	":"
-	parametro -> ""
-	n
-	parametro -> n
-	")"
-	cabecalho -> ")"
-	corpo
-	cabecalho -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	acao
-	corpo -> acao
-	declaracao_variaveis
-	acao -> declaracao_variaveis
-	tipo
-	declaracao_variaveis -> tipo
-	inteiro
-	tipo -> inteiro
-	":"
-	declaracao_variaveis -> ""
-	lista_variaveis
-	declaracao_variaveis -> lista_variaveis
-	var
-	lista_variaveis -> var
-	i
-	var -> i
-	acao
-	corpo -> acao
-	declaracao_variaveis
-	acao -> declaracao_variaveis
-	tipo
-	declaracao_variaveis -> tipo
-	inteiro
-	tipo -> inteiro
-	":"
-	declaracao_variaveis -> ""
-	lista_variaveis
-	declaracao_variaveis -> lista_variaveis
-	var
-	lista_variaveis -> var
-	j
-	var -> j
-	acao
-	corpo -> acao
-	declaracao_variaveis
-	acao -> declaracao_variaveis
-	tipo
-	declaracao_variaveis -> tipo
-	inteiro
-	tipo -> inteiro
-	":"
-	declaracao_variaveis -> ""
-	lista_variaveis
-	declaracao_variaveis -> lista_variaveis
-	var
-	lista_variaveis -> var
-	temp
-	var -> temp
-	acao
-	corpo -> acao
-	expressao
-	acao -> expressao
-	atribuicao
-	expressao -> atribuicao
-	var
-	atribuicao -> var
-	i
-	var -> i
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	0
-	numero -> 0
-	acao
-	corpo -> acao
-	expressao
-	acao -> expressao
-	atribuicao
-	expressao -> atribuicao
-	var
-	atribuicao -> var
-	j
-	var -> j
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	0
-	numero -> 0
-	acao
-	corpo -> acao
-	repita
-	acao -> repita
-	repita
-	repita -> repita
-	corpo
-	repita -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	acao
-	corpo -> acao
-	repita
-	acao -> repita
-	repita
-	repita -> repita
-	corpo
-	repita -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	acao
-	corpo -> acao
-	se
-	acao -> se
-	se
-	se -> se
-	expressao
-	se -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_simples
-	expressao_simples -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	arr
-	var -> arr
-	indice
-	var -> indice
-	"["
-	indice -> "["
-	expressao
-	indice -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	j
-	var -> j
-	"]"
-	indice -> "]"
-	operador_relacional
-	expressao_simples -> operador_relacional
-	">"
-	operador_relacional -> ">"
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	arr
-	var -> arr
-	indice
-	var -> indice
-	"["
-	indice -> "["
-	expressao
-	indice -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_aditiva
-	expressao_aditiva -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	j
-	var -> j
-	operador_soma
-	expressao_aditiva -> operador_soma
-	"+"
-	operador_soma -> "+"
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	1
-	numero -> 1
-	"]"
-	indice -> "]"
-	"então"
-	se -> "então"
-	corpo
-	se -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	acao
-	corpo -> acao
-	expressao
-	acao -> expressao
-	atribuicao
-	expressao -> atribuicao
-	var
-	atribuicao -> var
-	temp
-	var -> temp
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	arr
-	var -> arr
-	indice
-	var -> indice
-	"["
-	indice -> "["
-	expressao
-	indice -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	j
-	var -> j
-	"]"
-	indice -> "]"
-	acao
-	corpo -> acao
-	expressao
-	acao -> expressao
-	atribuicao
-	expressao -> atribuicao
-	var
-	atribuicao -> var
-	arr
-	var -> arr
-	indice
-	var -> indice
-	"["
-	indice -> "["
-	expressao
-	indice -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	j
-	var -> j
-	"]"
-	indice -> "]"
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	arr
-	var -> arr
-	indice
-	var -> indice
-	"["
-	indice -> "["
-	expressao
-	indice -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_aditiva
-	expressao_aditiva -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	j
-	var -> j
-	operador_soma
-	expressao_aditiva -> operador_soma
-	"+"
-	operador_soma -> "+"
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	1
-	numero -> 1
-	"]"
-	indice -> "]"
-	acao
-	corpo -> acao
-	expressao
-	acao -> expressao
-	atribuicao
-	expressao -> atribuicao
-	var
-	atribuicao -> var
-	arr
-	var -> arr
-	indice
-	var -> indice
-	"["
-	indice -> "["
-	expressao
-	indice -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_aditiva
-	expressao_aditiva -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	j
-	var -> j
-	operador_soma
-	expressao_aditiva -> operador_soma
-	"+"
-	operador_soma -> "+"
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	1
-	numero -> 1
-	"]"
-	indice -> "]"
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	arr
-	var -> arr
-	indice
-	var -> indice
-	"["
-	indice -> "["
-	expressao
-	indice -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	j
-	var -> j
-	"]"
-	indice -> "]"
-	fim
-	se -> fim
-	acao
-	corpo -> acao
-	expressao
-	acao -> expressao
-	atribuicao
-	expressao -> atribuicao
-	var
-	atribuicao -> var
-	j
-	var -> j
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_aditiva
-	expressao_aditiva -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	j
-	var -> j
-	operador_soma
-	expressao_aditiva -> operador_soma
-	"+"
-	operador_soma -> "+"
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	1
-	numero -> 1
-	"até"
-	repita -> "até"
-	expressao
-	repita -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_simples
-	expressao_simples -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	j
-	var -> j
-	operador_relacional
-	expressao_simples -> operador_relacional
-	"="
-	operador_relacional -> "="
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_aditiva
-	expressao_aditiva -> expressao_aditiva
-	expressao_aditiva
-	expressao_aditiva -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	n
-	var -> n
-	operador_soma
-	expressao_aditiva -> operador_soma
-	"-"
-	operador_soma -> "-"
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	i
-	var -> i
-	operador_soma
-	expressao_aditiva -> operador_soma
-	"-"
-	operador_soma -> "-"
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	1
-	numero -> 1
-	acao
-	corpo -> acao
-	expressao
-	acao -> expressao
-	atribuicao
-	expressao -> atribuicao
-	var
-	atribuicao -> var
-	i
-	var -> i
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_aditiva
-	expressao_aditiva -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	i
-	var -> i
-	operador_soma
-	expressao_aditiva -> operador_soma
-	"+"
-	operador_soma -> "+"
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	1
-	numero -> 1
-	"até"
-	repita -> "até"
-	expressao
-	repita -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_simples
-	expressao_simples -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	i
-	var -> i
-	operador_relacional
-	expressao_simples -> operador_relacional
-	"="
-	operador_relacional -> "="
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_aditiva
-	expressao_aditiva -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	n
-	var -> n
-	operador_soma
-	expressao_aditiva -> operador_soma
-	"-"
-	operador_soma -> "-"
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	1
-	numero -> 1
-	fim
-	cabecalho -> fim
-	declaracao
-	lista_declaracoes -> declaracao
-	declaracao_funcao
-	declaracao -> declaracao_funcao
-	tipo
-	declaracao_funcao -> tipo
-	inteiro
-	tipo -> inteiro
-	cabecalho
-	declaracao_funcao -> cabecalho
-	principal
-	cabecalho -> principal
-	"("
-	cabecalho -> "("
-	lista_parametros
-	cabecalho -> lista_parametros
-	")"
-	cabecalho -> ")"
-	corpo
-	cabecalho -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	acao
-	corpo -> acao
-	declaracao_variaveis
-	acao -> declaracao_variaveis
-	tipo
-	declaracao_variaveis -> tipo
-	inteiro
-	tipo -> inteiro
-	":"
-	declaracao_variaveis -> ""
-	lista_variaveis
-	declaracao_variaveis -> lista_variaveis
-	var
-	lista_variaveis -> var
-	i
-	var -> i
-	acao
-	corpo -> acao
-	expressao
-	acao -> expressao
-	atribuicao
-	expressao -> atribuicao
-	var
-	atribuicao -> var
-	i
-	var -> i
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	0
-	numero -> 0
-	acao
-	corpo -> acao
-	repita
-	acao -> repita
-	repita
-	repita -> repita
-	corpo
-	repita -> corpo
-	corpo
-	corpo -> corpo
-	corpo
-	corpo -> corpo
-	acao
-	corpo -> acao
-	leia
-	acao -> leia
-	leia
-	leia -> leia
-	"("
-	leia -> "("
-	var
-	leia -> var
-	array
-	var -> array
-	indice
-	var -> indice
-	"["
-	indice -> "["
-	expressao
-	indice -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	i
-	var -> i
-	"]"
-	indice -> "]"
-	")"
-	leia -> ")"
-	acao
-	corpo -> acao
-	expressao
-	acao -> expressao
-	atribuicao
-	expressao -> atribuicao
-	var
-	atribuicao -> var
-	i
-	var -> i
-	":="
-	atribuicao -> "":"="
-	expressao
-	atribuicao -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_aditiva
-	expressao_aditiva -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	i
-	var -> i
-	operador_soma
-	expressao_aditiva -> operador_soma
-	"+"
-	operador_soma -> "+"
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	1
-	numero -> 1
-	"até"
-	repita -> "até"
-	expressao
-	repita -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_simples
-	expressao_simples -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	i
-	var -> i
-	operador_relacional
-	expressao_simples -> operador_relacional
-	"="
-	operador_relacional -> "="
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	tamanho
-	var -> tamanho
-	acao
-	corpo -> acao
-	escreva
-	acao -> escreva
-	escreva
-	escreva -> escreva
-	"("
-	escreva -> "("
-	expressao
-	escreva -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	chamada_funcao
-	fator -> chamada_funcao
-	bubbleSort
-	chamada_funcao -> bubbleSort
-	"("
-	chamada_funcao -> "("
-	lista_argumentos
-	chamada_funcao -> lista_argumentos
-	lista_argumentos
-	lista_argumentos -> lista_argumentos
-	expressao
-	lista_argumentos -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	array
-	var -> array
-	","
-	lista_argumentos -> ","
-	expressao
-	lista_argumentos -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	var
-	fator -> var
-	tamanho
-	var -> tamanho
-	")"
-	chamada_funcao -> ")"
-	")"
-	escreva -> ")"
-	acao
-	corpo -> acao
-	retorna
-	acao -> retorna
-	retorna
-	retorna -> retorna
-	"("
-	retorna -> "("
-	expressao
-	retorna -> expressao
-	expressao_logica
-	expressao -> expressao_logica
-	expressao_simples
-	expressao_logica -> expressao_simples
-	expressao_aditiva
-	expressao_simples -> expressao_aditiva
-	expressao_multiplicativa
-	expressao_aditiva -> expressao_multiplicativa
-	expressao_unaria
-	expressao_multiplicativa -> expressao_unaria
-	fator
-	expressao_unaria -> fator
-	numero
-	fator -> numero
-	0
-	numero -> 0
-	")"
-	retorna -> ")"
-	fim
-	cabecalho -> fim
+	0 [label=programa]
+	1 [label=lista_declaracoes]
+	0 -> 1
+	2 [label=lista_declaracoes]
+	1 -> 2
+	3 [label=lista_declaracoes]
+	2 -> 3
+	4 [label=declaracao]
+	3 -> 4
+	5 [label=declaracao_variaveis]
+	4 -> 5
+	6 [label=tipo]
+	5 -> 6
+	7 [label=inteiro]
+	6 -> 7
+	9 [label=":"]
+	5 -> 9
+	10 [label=lista_variaveis]
+	5 -> 10
+	11 [label=var]
+	10 -> 11
+	12 [label=n]
+	11 -> 12
+	18 [label=declaracao]
+	2 -> 18
+	19 [label=declaracao_funcao]
+	18 -> 19
+	20 [label=tipo]
+	19 -> 20
+	21 [label=inteiro]
+	20 -> 21
+	23 [label=cabecalho]
+	19 -> 23
+	24 [label=fatorial]
+	23 -> 24
+	25 [label="("]
+	23 -> 25
+	26 [label=lista_parametros]
+	23 -> 26
+	27 [label=parametro]
+	26 -> 27
+	28 [label=tipo]
+	27 -> 28
+	29 [label=inteiro]
+	28 -> 29
+	31 [label=":"]
+	27 -> 31
+	32 [label=n]
+	27 -> 32
+	35 [label=")"]
+	23 -> 35
+	36 [label=corpo]
+	23 -> 36
+	37 [label=corpo]
+	36 -> 37
+	38 [label=corpo]
+	37 -> 38
+	39
+	38 -> 39
+	41 [label=acao]
+	37 -> 41
+	42 [label=declaracao_variaveis]
+	41 -> 42
+	43 [label=tipo]
+	42 -> 43
+	44 [label=inteiro]
+	43 -> 44
+	46 [label=":"]
+	42 -> 46
+	47 [label=lista_variaveis]
+	42 -> 47
+	48 [label=var]
+	47 -> 48
+	49 [label=fat]
+	48 -> 49
+	55 [label=acao]
+	36 -> 55
+	56 [label=se]
+	55 -> 56
+	57 [label=se]
+	56 -> 57
+	58 [label=expressao]
+	56 -> 58
+	59 [label=expressao_logica]
+	58 -> 59
+	60 [label=expressao_simples]
+	59 -> 60
+	61 [label=expressao_simples]
+	60 -> 61
+	62 [label=expressao_aditiva]
+	61 -> 62
+	63 [label=expressao_multiplicativa]
+	62 -> 63
+	64 [label=expressao_unaria]
+	63 -> 64
+	65 [label=fator]
+	64 -> 65
+	66 [label=var]
+	65 -> 66
+	67 [label=n]
+	66 -> 67
+	74 [label=operador_relacional]
+	60 -> 74
+	75 [label=">"]
+	74 -> 75
+	77 [label=expressao_aditiva]
+	60 -> 77
+	78 [label=expressao_multiplicativa]
+	77 -> 78
+	79 [label=expressao_unaria]
+	78 -> 79
+	80 [label=fator]
+	79 -> 80
+	81 [label=numero]
+	80 -> 81
+	82 [label=0]
+	81 -> 82
+	91 [label="então"]
+	56 -> 91
+	92 [label=corpo]
+	56 -> 92
+	93 [label=corpo]
+	92 -> 93
+	94 [label=corpo]
+	93 -> 94
+	95 [label=corpo]
+	94 -> 95
+	96
+	95 -> 96
+	98 [label=acao]
+	94 -> 98
+	99 [label=expressao]
+	98 -> 99
+	100 [label=atribuicao]
+	99 -> 100
+	101 [label=var]
+	100 -> 101
+	102 [label=fat]
+	101 -> 102
+	104 [label=":="]
+	100 -> 104
+	105 [label=expressao]
+	100 -> 105
+	106 [label=expressao_logica]
+	105 -> 106
+	107 [label=expressao_simples]
+	106 -> 107
+	108 [label=expressao_aditiva]
+	107 -> 108
+	109 [label=expressao_multiplicativa]
+	108 -> 109
+	110 [label=expressao_unaria]
+	109 -> 110
+	111 [label=fator]
+	110 -> 111
+	112 [label=numero]
+	111 -> 112
+	113 [label=1]
+	112 -> 113
+	126 [label=acao]
+	93 -> 126
+	127 [label=repita]
+	126 -> 127
+	128 [label=repita]
+	127 -> 128
+	129 [label=corpo]
+	127 -> 129
+	130 [label=corpo]
+	129 -> 130
+	131 [label=corpo]
+	130 -> 131
+	132
+	131 -> 132
+	134 [label=acao]
+	130 -> 134
+	135 [label=expressao]
+	134 -> 135
+	136 [label=atribuicao]
+	135 -> 136
+	137 [label=var]
+	136 -> 137
+	138 [label=fat]
+	137 -> 138
+	140 [label=":="]
+	136 -> 140
+	141 [label=expressao]
+	136 -> 141
+	142 [label=expressao_logica]
+	141 -> 142
+	143 [label=expressao_simples]
+	142 -> 143
+	144 [label=expressao_aditiva]
+	143 -> 144
+	145 [label=expressao_multiplicativa]
+	144 -> 145
+	146 [label=expressao_multiplicativa]
+	145 -> 146
+	147 [label=expressao_unaria]
+	146 -> 147
+	148 [label=fator]
+	147 -> 148
+	149 [label=var]
+	148 -> 149
+	150 [label=fat]
+	149 -> 150
+	155 [label=operador_multiplicacao]
+	145 -> 155
+	156 [label="*"]
+	155 -> 156
+	158 [label=expressao_unaria]
+	145 -> 158
+	159 [label=fator]
+	158 -> 159
+	160 [label=var]
+	159 -> 160
+	161 [label=n]
+	160 -> 161
+	174 [label=acao]
+	129 -> 174
+	175 [label=expressao]
+	174 -> 175
+	176 [label=atribuicao]
+	175 -> 176
+	177 [label=var]
+	176 -> 177
+	178 [label=n]
+	177 -> 178
+	180 [label=":="]
+	176 -> 180
+	181 [label=expressao]
+	176 -> 181
+	182 [label=expressao_logica]
+	181 -> 182
+	183 [label=expressao_simples]
+	182 -> 183
+	184 [label=expressao_aditiva]
+	183 -> 184
+	185 [label=expressao_aditiva]
+	184 -> 185
+	186 [label=expressao_multiplicativa]
+	185 -> 186
+	187 [label=expressao_unaria]
+	186 -> 187
+	188 [label=fator]
+	187 -> 188
+	189 [label=var]
+	188 -> 189
+	190 [label=n]
+	189 -> 190
+	196 [label=operador_soma]
+	184 -> 196
+	197 [label="-"]
+	196 -> 197
+	199 [label=expressao_multiplicativa]
+	184 -> 199
+	200 [label=expressao_unaria]
+	199 -> 200
+	201 [label=fator]
+	200 -> 201
+	202 [label=numero]
+	201 -> 202
+	203 [label=1]
+	202 -> 203
+	216 [label="até"]
+	127 -> 216
+	217 [label=expressao]
+	127 -> 217
+	218 [label=expressao_logica]
+	217 -> 218
+	219 [label=expressao_simples]
+	218 -> 219
+	220 [label=expressao_simples]
+	219 -> 220
+	221 [label=expressao_aditiva]
+	220 -> 221
+	222 [label=expressao_multiplicativa]
+	221 -> 222
+	223 [label=expressao_unaria]
+	222 -> 223
+	224 [label=fator]
+	223 -> 224
+	225 [label=var]
+	224 -> 225
+	226 [label=n]
+	225 -> 226
+	233 [label=operador_relacional]
+	219 -> 233
+	234 [label="="]
+	233 -> 234
+	236 [label=expressao_aditiva]
+	219 -> 236
+	237 [label=expressao_multiplicativa]
+	236 -> 237
+	238 [label=expressao_unaria]
+	237 -> 238
+	239 [label=fator]
+	238 -> 239
+	240 [label=numero]
+	239 -> 240
+	241 [label=0]
+	240 -> 241
+	253 [label=acao]
+	92 -> 253
+	254 [label=retorna]
+	253 -> 254
+	255 [label=retorna]
+	254 -> 255
+	256 [label="("]
+	254 -> 256
+	257 [label=expressao]
+	254 -> 257
+	258 [label=expressao_logica]
+	257 -> 258
+	259 [label=expressao_simples]
+	258 -> 259
+	260 [label=expressao_aditiva]
+	259 -> 260
+	261 [label=expressao_multiplicativa]
+	260 -> 261
+	262 [label=expressao_unaria]
+	261 -> 262
+	263 [label=fator]
+	262 -> 263
+	264 [label=var]
+	263 -> 264
+	265 [label=fat]
+	264 -> 265
+	274 [label=")"]
+	254 -> 274
+	278 [label="senão"]
+	56 -> 278
+	279 [label=corpo]
+	56 -> 279
+	280 [label=corpo]
+	279 -> 280
+	281
+	280 -> 281
+	283 [label=acao]
+	279 -> 283
+	284 [label=retorna]
+	283 -> 284
+	285 [label=retorna]
+	284 -> 285
+	286 [label="("]
+	284 -> 286
+	287 [label=expressao]
+	284 -> 287
+	288 [label=expressao_logica]
+	287 -> 288
+	289 [label=expressao_simples]
+	288 -> 289
+	290 [label=expressao_aditiva]
+	289 -> 290
+	291 [label=expressao_multiplicativa]
+	290 -> 291
+	292 [label=expressao_unaria]
+	291 -> 292
+	293 [label=fator]
+	292 -> 293
+	294 [label=numero]
+	293 -> 294
+	295 [label=0]
+	294 -> 295
+	304 [label=")"]
+	284 -> 304
+	308 [label=fim]
+	56 -> 308
+	312 [label=fim]
+	23 -> 312
+	317 [label=declaracao]
+	1 -> 317
+	318 [label=declaracao_funcao]
+	317 -> 318
+	319 [label=tipo]
+	318 -> 319
+	320 [label=inteiro]
+	319 -> 320
+	322 [label=cabecalho]
+	318 -> 322
+	323 [label=principal]
+	322 -> 323
+	324 [label="("]
+	322 -> 324
+	325 [label=lista_parametros]
+	322 -> 325
+	326
+	325 -> 326
+	328 [label=")"]
+	322 -> 328
+	329 [label=corpo]
+	322 -> 329
+	330 [label=corpo]
+	329 -> 330
+	331 [label=corpo]
+	330 -> 331
+	332 [label=corpo]
+	331 -> 332
+	333
+	332 -> 333
+	335 [label=acao]
+	331 -> 335
+	336 [label=leia]
+	335 -> 336
+	337 [label=leia]
+	336 -> 337
+	338 [label="("]
+	336 -> 338
+	339 [label=var]
+	336 -> 339
+	340 [label=n]
+	339 -> 340
+	342 [label=")"]
+	336 -> 342
+	346 [label=acao]
+	330 -> 346
+	347 [label=escreva]
+	346 -> 347
+	348 [label=escreva]
+	347 -> 348
+	349 [label="("]
+	347 -> 349
+	350 [label=expressao]
+	347 -> 350
+	351 [label=expressao_logica]
+	350 -> 351
+	352 [label=expressao_simples]
+	351 -> 352
+	353 [label=expressao_aditiva]
+	352 -> 353
+	354 [label=expressao_multiplicativa]
+	353 -> 354
+	355 [label=expressao_unaria]
+	354 -> 355
+	356 [label=fator]
+	355 -> 356
+	357 [label=chamada_funcao]
+	356 -> 357
+	358 [label=fatorial]
+	357 -> 358
+	359 [label="("]
+	357 -> 359
+	360 [label=lista_argumentos]
+	357 -> 360
+	361 [label=expressao]
+	360 -> 361
+	362 [label=expressao_logica]
+	361 -> 362
+	363 [label=expressao_simples]
+	362 -> 363
+	364 [label=expressao_aditiva]
+	363 -> 364
+	365 [label=expressao_multiplicativa]
+	364 -> 365
+	366 [label=expressao_unaria]
+	365 -> 366
+	367 [label=fator]
+	366 -> 367
+	368 [label=var]
+	367 -> 368
+	369 [label=n]
+	368 -> 369
+	379 [label=")"]
+	357 -> 379
+	388 [label=")"]
+	347 -> 388
+	392 [label=acao]
+	329 -> 392
+	393 [label=retorna]
+	392 -> 393
+	394 [label=retorna]
+	393 -> 394
+	395 [label="("]
+	393 -> 395
+	396 [label=expressao]
+	393 -> 396
+	397 [label=expressao_logica]
+	396 -> 397
+	398 [label=expressao_simples]
+	397 -> 398
+	399 [label=expressao_aditiva]
+	398 -> 399
+	400 [label=expressao_multiplicativa]
+	399 -> 400
+	401 [label=expressao_unaria]
+	400 -> 401
+	402 [label=fator]
+	401 -> 402
+	403 [label=numero]
+	402 -> 403
+	404 [label=0]
+	403 -> 404
+	413 [label=")"]
+	393 -> 413
+	417 [label=fim]
+	322 -> 417
 }
