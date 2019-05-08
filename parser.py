@@ -24,6 +24,8 @@ def makeTree(node):
 
 # utilizar IDs para nao repetir
 
+
+
 def __makeTree(node, dot):
     for child in node.childs:
         if(child == None): break;
