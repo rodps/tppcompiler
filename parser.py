@@ -234,7 +234,11 @@ def p_error(p):
 # Build the parser
 parser = yacc.yacc()
 
-code = open(sys.argv[1], 'r')
+try:
+    code = open(sys.argv[1], 'r')
+except FileNotFoundError:
+    sys.exit("arquivo nao encontrado")
+
 r = parser.parse(code.read())
 # printTree(r)
 dot = Digraph()
