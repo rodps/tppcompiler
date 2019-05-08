@@ -3,17 +3,6 @@ import sys
 from scanner import tokens
 from graphviz import Digraph
 
-# dot = Digraph(comment='teste')
-# dot.node('A', 'King Arthur')
-# dot.node('B', 'Sir Bedevere the Wise')
-# dot.node('L', 'Sir Lancelot the Brave')
-
-# dot.edges(['AB', 'AL'])
-# dot.edge('B', 'L', constraint='false')
-
-# print(dot.source)
-# dot.render('test-output/round-table.gv', view=True)
-
 def printTree(root):
     if(root == None):
         return
@@ -25,7 +14,6 @@ def printTree(root):
             printTree(child)
 
 def makeGraph(dot, parent, id=0):
-    print("pai: " + parent.name)
     if(id == 0):
         dot.node(str(id), parent.name)
     c = id
@@ -33,10 +21,8 @@ def makeGraph(dot, parent, id=0):
         c += 1
         if(isinstance(child, Node)):
             dot.node(str(c), child.name)
-            print(child.name)
         else:
             dot.node(str(c), child)
-            print(child)
         dot.edge(str(id), str(c))
         if(isinstance(child, Node)):
             c = makeGraph(dot, child, c)
@@ -253,4 +239,4 @@ r = parser.parse(code.read())
 # printTree(r)
 dot = Digraph()
 makeGraph(dot, r)
-dot.render('test-output/round-table.gv', view=True)
+dot.render('test-output/arvore-sintatica.gv', view=True)
