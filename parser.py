@@ -2,41 +2,32 @@ import ply.yacc as yacc
 import sys
 from scanner import tokens
 from graphviz import Digraph
+import re
 
-# dot = Digraph(comment='teste')
-# dot.node('A', 'King Arthur')
-# dot.node('B', 'Sir Bedevere the Wise')
-# dot.node('L', 'Sir Lancelot the Brave')
-
-# dot.edges(['AB', 'AL'])
-# dot.edge('B', 'L', constraint='false')
-
-# print(dot.source)
-# dot.render('test-output/round-table.gv', view=True)
-
-
-def makeTree(node):
-    dot = Digraph(comment='teste')
-    dot.node(node.name)
-    __makeTree(node, dot)
-    print(dot.source)
-    dot.render('test-output/round-table.gv', view=True)
-
-# utilizar IDs para nao repetir
-
-
-
-def __makeTree(node, dot):
-    for child in node.childs:
-        if(child == None): break;
-        if hasattr(child, 'name'):
-            dot.node(child.name)
-            dot.edge(node.name, child.name)
-            __makeTree(child, dot)
-        else:
+def printTree(root):
+    if(root == None):
+        return
+    print("pai: ", root)
+    for child in root.childs:
             print(child)
-            dot.node(child)
-            dot.edge(node.name, child)
+    for child in root.childs:
+        if(isinstance(child, Node)):
+            printTree(child)
+
+def makeGraph(dot, parent, id=0):
+    if(id == 0):
+        dot.node(str(id), parent.name)
+    c = id
+    for child in parent.childs:
+        c += 1
+        if(isinstance(child, Node)):
+            dot.node(str(c), child.name)
+        else:
+            dot.node(str(c), child)
+        dot.edge(str(id), str(c))
+        if(isinstance(child, Node)):
+            c = makeGraph(dot, child, c)
+    return c + 1
 
 class Node:
     def __init__(self, name, childs=[]):
@@ -46,11 +37,9 @@ class Node:
     def __str__(self):
         return self.name
         
-
 def p_programa(p):
     'programa : lista_declaracoes'
     p[0] = Node('programa', p[1:])
-    makeTree(p[0])
 
 def p_lista_declaracoes(p):
     '''lista_declaracoes : lista_declaracoes declaracao
@@ -77,8 +66,8 @@ def p_lista_variaveis(p):
     p[0] = Node('lista_variaveis', p[1:])
 
 def p_var(p):
-    '''var : ID 
-           | ID indice'''
+    '''var : id 
+           | id indice'''
     p[0] = Node('var', p[1:])
 
 def p_indice(p):
@@ -97,24 +86,30 @@ def p_declaracao_funcao(p):
     p[0] = Node('declaracao_funcao', p[1:])
 
 def p_cabecalho(p):
-    'cabecalho : ID ABRE_PARENTESE lista_parametros FECHA_PARENTESE corpo FIM'
+    'cabecalho : id ABRE_PARENTESE lista_parametros FECHA_PARENTESE corpo FIM'
     p[0] = Node('cabecalho', p[1:])
 
 def p_lista_parametros(p):
     '''lista_parametros : lista_parametros VIRGULA parametro
                         | parametro
                         | empty'''
-    p[0] = Node('lista_parametros', p[1:])
+    if(p[1] != None):
+        p[0] = Node('lista_parametros', p[1:])
+    else:
+        p[0] = Node('lista_parametros')
 
 def p_parametro(p):
-    '''parametro : tipo DOIS_PONTOS ID
+    '''parametro : tipo DOIS_PONTOS id
                  | parametro ABRE_COLCHETE FECHA_COLCHETE'''
     p[0] = Node('parametro', p[1:])
 
 def p_corpo(p):
     '''corpo : corpo acao
              | empty'''
-    p[0] = Node('corpo', p[1:])
+    if(p[1] != None):
+        p[0] = Node('corpo', p[1:])
+    else:
+        p[0] = Node('corpo')
 
 def p_acao(p):
     '''acao : expressao
@@ -218,20 +213,39 @@ def p_fator(p):
     p[0] = Node('fator', p[1:])
 
 def p_numero(p):
-    '''numero : NUM_INT
-              | NUM_FLUT
-              | NUM_NOTACAO'''
+    '''numero : num_int
+              | num_flut
+              | num_notacao'''
     p[0] = Node('numero', p[1:])
 
 def p_chamada_funcao(p):
-    'chamada_funcao : ID ABRE_PARENTESE lista_argumentos FECHA_PARENTESE'
+    'chamada_funcao : id ABRE_PARENTESE lista_argumentos FECHA_PARENTESE'
     p[0] = Node('chamada_funcao', p[1:])
 
 def p_lista_argumentos(p):
     '''lista_argumentos : lista_argumentos VIRGULA expressao
                         | expressao
                         | empty '''
-    p[0] = Node('lista_argumentos', p[1:])
+    if(p[1] != None):
+        p[0] = Node('lista_argumentos', p[1:])
+    else:
+        p[0] = Node('lista_argumentos')
+
+def p_id(p):
+    'id : ID'
+    p[0] = Node('ID', p[1:])
+
+def p_num_int(p):
+    'num_int : NUM_INT'
+    p[0] = Node('NUM_INT', p[1:])
+
+def p_num_flut(p):
+    'num_flut : NUM_FLUT'
+    p[0] = Node('NUM_FLUT', p[1:])
+
+def p_num_notacao(p):
+    'num_notacao : NUM_NOTACAO'
+    p[0] = Node('NUM_NOTACAO', p[1:])
 
 def p_empty(p):
     'empty :'
@@ -246,5 +260,13 @@ def p_error(p):
 # Build the parser
 parser = yacc.yacc()
 
-code = open(sys.argv[1], 'r')
-parser.parse(code.read())
+try:
+    code = open(sys.argv[1], 'r')
+except FileNotFoundError:
+    sys.exit("arquivo nao encontrado")
+
+r = parser.parse(code.read())
+# printTree(r)
+dot = Digraph()
+makeGraph(dot, r)
+dot.render('graph-output/arvore-sintatica.gv', view=True)

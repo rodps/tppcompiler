@@ -92,7 +92,10 @@ def t_error(t):
 
 lexer = lex.lex()
 
-arq_code = open(sys.argv[1], 'r')
+try:
+    arq_code = open(sys.argv[1], 'r')
+except FileNotFoundError:
+    sys.exit("arquivo nao encontrado")
 
 # Give the lexer some input
 lexer.input(arq_code.read())

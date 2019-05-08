@@ -2,6 +2,7 @@
 
 da Silva}
 
+inteiro: a[10]
 inteiro: tamanho
 tamanho:= 10
 inteiro: array[tamanho]
