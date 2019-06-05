@@ -90,6 +90,9 @@ def t_error(t):
     print("Caracter ilegar '%s', %d" % (t.value[0], t.lineno))
     t.lexer.skip(1)
 
+def t_eof(t):
+    t.lexer.lineno = 1
+
 lexer = lex.lex()
 
 try:

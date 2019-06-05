@@ -1,8 +1,7 @@
-import ply.yacc as yacc
 import sys
+import ply.yacc as yacc
 from scanner import tokens
 from graphviz import Digraph
-import re
 
 def printTree(root):
     if(root == None):
@@ -56,6 +55,14 @@ def p_declaracao_variaveis(p):
     'declaracao_variaveis : tipo DOIS_PONTOS lista_variaveis'
     p[0] = Node('declaracao_variaveis', p[1:])
 
+def p_declaracao_variaveis_error(p):
+    'declaracao_variaveis : tipo DOIS_PONTOS error'
+    print("Ao declarar variável.")
+
+def p_declaracao_variaveis_error2(p):
+    'declaracao_variaveis : error DOIS_PONTOS lista_variaveis'
+    print("Ao declarar variável.")
+
 def p_inicializacao_variaveis(p):
     'inicializacao_variaveis : atribuicao'
     p[0] = Node('inicializacao_variaveis', p[1:])
@@ -85,9 +92,22 @@ def p_declaracao_funcao(p):
                          | cabecalho'''
     p[0] = Node('declaracao_funcao', p[1:])
 
+def p_declaracao_funcao_error(p):
+    '''declaracao_funcao : error cabecalho'''
+    print('Ao declarar função: tipo incorreto.')
+
 def p_cabecalho(p):
     'cabecalho : id ABRE_PARENTESE lista_parametros FECHA_PARENTESE corpo FIM'
     p[0] = Node('cabecalho', p[1:])
+
+def p_cabecalho_error(p):
+    'cabecalho : error ABRE_PARENTESE lista_parametros FECHA_PARENTESE corpo FIM'
+    print('No identificador da função.')
+
+def p_cabecalho_error2(p):
+    'cabecalho : id ABRE_PARENTESE error FECHA_PARENTESE corpo FIM'
+    print('Na lista de parametros.')
+
 
 def p_lista_parametros(p):
     '''lista_parametros : lista_parametros VIRGULA parametro
@@ -253,20 +273,22 @@ def p_empty(p):
 
 def p_error(p):
     if p:
-        print("Syntax error: '%s' na linha %d" % (p.value, p.lineno))
+        print("Erro de sintaxe: '%s' na linha %d." % (p.value, p.lineno))
     else:
         print("Syntax error at EOF")
 
-# Build the parser
+# Constrói o parser
 parser = yacc.yacc()
 
+# Abrir o arquivo código
 try:
     code = open(sys.argv[1], 'r')
 except FileNotFoundError:
     sys.exit("arquivo nao encontrado")
 
-r = parser.parse(code.read())
-# printTree(r)
-dot = Digraph()
-makeGraph(dot, r)
-dot.render('graph-output/arvore-sintatica.gv', view=True)
+root = parser.parse(code.read()) # Função que realiza o parser
+if root == None:
+    sys.exit(1)
+dot = Digraph() # Função da biblioteca Graphviz responsável por criar um grafo.
+makeGraph(dot, root) # Constrói o grafo que representa a árvore sintática.
+dot.render('graph-output/arvore-sintatica.gv', view=False) # Salva o grafo na pasta especificada.
