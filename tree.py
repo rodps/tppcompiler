@@ -44,12 +44,7 @@ def prune(node):
     
     if len(node.children) > 1:
         for i in range(len(node.children)):
-            res = prune(node.children[i])
-            print('tribui', node.children[i], res)
-            node.children[i] = res
-        print(node)
+            node.children[i] = prune(node.children[i])
         return node
     else:
-        res = prune(node.children[0])
-        print(node, res)
-        return res
+        return prune(node.children[0])
