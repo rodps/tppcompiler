@@ -108,6 +108,6 @@ while True:
     tok = lexer.token()
     if not tok: 
         break      # No more input
-    print(tok.lineno, tok.type)
+    # print(tok.lineno, tok.type)
 
 arq_code.close()
