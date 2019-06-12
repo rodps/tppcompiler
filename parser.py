@@ -58,7 +58,10 @@ def p_tipo(p):
 def p_declaracao_funcao(p):
     '''declaracao_funcao : tipo cabecalho
                          | cabecalho'''
-    p[0] = tree.Node('declaracao_funcao', p[1:])
+    if len(p) > 2:
+        p[0] = tree.Node('declaracao_funcao', p[1:])
+    else:
+        p[0] = tree.Node('declaracao_funcao', ['vazio', p[1]])
 
 def p_declaracao_funcao_error(p):
     '''declaracao_funcao : error cabecalho'''

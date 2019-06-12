@@ -17,6 +17,6 @@ fim
 
 inteiro principal()
     leia(n)
-    escreva(fatorial(n))
+    escreva(fatorial(n, a))
     retorna(0)
 fim
