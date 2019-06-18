@@ -21,11 +21,11 @@ def symbols(node: tree.Node, scope='programa'):
         params = []
         if node.children[1].children[2].name == 'lista_parametros':
             for child in node.children[1].children[2].children:
-                param = {'type': child.children[0], 'id': child.children[1].children[0], 'value': 0}
+                param = {'type': child.children[0], 'id': child.children[1].children[0]}
                 params.append(param)
         elif node.children[1].children[2].name == 'parametro':
             param = node.children[1].children[2]
-            params.append({'type': param.children[0], 'id': param.children[1].children[0], 'value': 0})
+            params.append({'type': param.children[0], 'id': param.children[1].children[0]})
         symbol = {'id': id, 'scope': scope, 'type': 'function', 'data_type': data_type,
                   'params': params}
         if symbol in symbols_table:
@@ -39,14 +39,14 @@ def symbols(node: tree.Node, scope='programa'):
         if node.children[1].name == 'lista_variaveis':
             for child in node.children[1].children:
                 id = child.children[0]
-                symbol = {'id': id, 'scope': scope, 'type': 'var', 'data_type': data_type, 'value': 0}
+                symbol = {'id': id, 'scope': scope, 'type': 'var', 'data_type': data_type}
                 if table_contains(id, scope, 'var'):
                     print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope)
                     return
                 symbols_table.append(symbol)
         else:
             id = node.children[1].children[0]
-            symbol = {'id': id, 'scope': scope, 'type': 'var', 'data_type': data_type, 'value': 0}
+            symbol = {'id': id, 'scope': scope, 'type': 'var', 'data_type': data_type}
             if table_contains(id, scope, 'var'):
                 print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope)
                 return
@@ -91,20 +91,17 @@ def symbols(node: tree.Node, scope='programa'):
         if not var:
             print("Erro semântico: váriavel não foi declarada. -> ", id)
             return
+        
 
     for child in node.children:
         symbols(child, scope)
 
 def assignment(var1, var2):
-    if var1['type'] == 'inteiro':
-        var1['value'] = int(var2['value'])
-        if var2['type'] == 'flutuante':
-            print("Aviso: cast de inteiro para flutuante.")
+    if var1['type'] == 'inteiro' and var2['type'] == 'flutuante':
+        print("Aviso: cast de inteiro para flutuante.")
         
-    elif var1['type'] == 'flutuante':
-        var1['value'] = float(var2['value'])
-        if var2['type'] == 'inteiro':
-            print("Aviso: cast de flutuante para inteiro.")
+    elif var1['type'] == 'flutuante' and var2['type'] == 'inteiro':
+        print("Aviso: cast de flutuante para inteiro.")
 
 def table_contains(id, scope=None, type=None):
     for symbol in symbols_table:
