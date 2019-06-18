@@ -79,11 +79,18 @@ def symbols(node: tree.Node, scope='programa'):
             args.append(symbol)
         
         if len(args) != len(function['params']):
-            print("Erro semântico: Numero de argumentos. ->", id)
+            print("Erro semântico: Numero de argumentos não combina. ->", id)
             return
         else:
             for i in range(len(args)):
                 assignment(function['params'][i], args[i])
+    
+    if node.name == 'atribuicao':
+        id = node.children[0].children[0]
+        var = table_contains(id)
+        if not var:
+            print("Erro semântico: váriavel não foi declarada. -> ", id)
+            return
 
     for child in node.children:
         symbols(child, scope)
@@ -91,12 +98,12 @@ def symbols(node: tree.Node, scope='programa'):
 def assignment(var1, var2):
     if var1['type'] == 'inteiro':
         var1['value'] = int(var2['value'])
-        if(var2['type'] == 'flutuante')
+        if var2['type'] == 'flutuante':
             print("Aviso: cast de inteiro para flutuante.")
         
     elif var1['type'] == 'flutuante':
         var1['value'] = float(var2['value'])
-        if(var2['type'] == 'inteiro'):
+        if var2['type'] == 'inteiro':
             print("Aviso: cast de flutuante para inteiro.")
 
 def table_contains(id, scope=None, type=None):
