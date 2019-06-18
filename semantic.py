@@ -83,10 +83,21 @@ def symbols(node: tree.Node, scope='programa'):
             return
         else:
             for i in range(len(args)):
-                function['params'][i]['value'] = args[i]['value']
+                assignment(function['params'][i], args[i])
 
     for child in node.children:
         symbols(child, scope)
+
+def assignment(var1, var2):
+    if var1['type'] == 'inteiro':
+        var1['value'] = int(var2['value'])
+        if(var2['type'] == 'flutuante')
+            print("Aviso: cast de inteiro para flutuante.")
+        
+    elif var1['type'] == 'flutuante':
+        var1['value'] = float(var2['value'])
+        if(var2['type'] == 'inteiro'):
+            print("Aviso: cast de flutuante para inteiro.")
 
 def table_contains(id, scope=None, type=None):
     for symbol in symbols_table:
