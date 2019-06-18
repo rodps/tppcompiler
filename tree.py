@@ -43,8 +43,12 @@ def prune(node):
         return node
     
     if len(node.children) > 1:
-        for i in range(len(node.children)):
+        i = 0
+        while i < len(node.children):
             node.children[i] = prune(node.children[i])
+            if node.children[i] in [':', ',']:
+                node.children.pop(i)
+            else: i += 1
         return node
     else:
         return prune(node.children[0])
