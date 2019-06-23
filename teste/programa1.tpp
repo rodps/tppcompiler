@@ -1,8 +1,7 @@
-inteiro: n, x
+inteiro: n, x[2]
 
-inteiro fatorial(inteiro: n, inteiro: x)
+inteiro fatorial(inteiro: n)
     inteiro: fat
-
     se n > 0 então {não calcula se n > 0}
         fat := 1
         repita
@@ -16,7 +15,7 @@ inteiro fatorial(inteiro: n, inteiro: x)
 fim
 
 inteiro principal()
-    leia(n)
-    escreva(fatorial(n, x))
+    leia(x[3])
+    escreva(fatorial(n))
     retorna(0)
 fim

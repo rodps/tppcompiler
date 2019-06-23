@@ -1,8 +1,9 @@
 from graphviz import Digraph
 
 class Node:
-    def __init__(self, name, children=[]):
+    def __init__(self, id, name, children=[]):
         self.name = name
+        self.id = id
         self.children = children
 
     def __str__(self):
@@ -33,6 +34,7 @@ def make_graph(dot, parent, id=0):
         if(isinstance(child, Node)):
             c = make_graph(dot, child, c)
     return c + 1
+    
 
 def prune(node):
     if not isinstance(node, Node):
