@@ -1,4 +1,4 @@
-inteiro: n, x[2]
+inteiro: n
 
 inteiro fatorial(inteiro: n)
     inteiro: fat
@@ -15,7 +15,7 @@ inteiro fatorial(inteiro: n)
 fim
 
 inteiro principal()
-    leia(x[3])
+    leia(n)
     escreva(fatorial(n))
     retorna(0)
 fim

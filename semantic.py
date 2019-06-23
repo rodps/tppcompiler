@@ -21,11 +21,28 @@ def symbols(node: tree.Node):
         id = node.children[1].children[0].children[0]
         params = []
         if node.children[1].children[2].name == 'lista_parametros':
-            for child in node.children[1].children[2].children:
-                param = {'data_type': child.children[0], 'id': child.children[1].children[0]}
-                params.append(param)
+            lista_param = node.children[1].children[2]
+            while True:
+                for child in lista_param.children:
+                    if child.name == 'parametro':
+                        var = {'data_type': child.children[0], 'id': child.children[1].children[0],
+                                'scope': id, 'type': 'var'}
+                        if table_contains(var['id'], scope=id, type='var'):
+                            print("Erro semântico: já existe uma variável com o mesmo nome ('{}'). Escopo: {}"
+                                    .format(var['id'], scope))
+                            return
+                        symbols_table.append(var)
+                        params.append({'data_type': child.children[0], 'id': child.children[1].children[0]})
+                
+                if len(lista_param.children) > 0 and lista_param.children[0] == 'lista_parametros':
+                    lista_param = lista_param.children[0]
+                else:
+                    break    
         elif node.children[1].children[2].name == 'parametro':
             param = node.children[1].children[2]
+            var = {'data_type': param.children[0], 'id': param.children[1].children[0],
+                    'scope': id, 'type': 'var'}
+            symbols_table.append(var)
             params.append({'data_type': param.children[0], 'id': param.children[1].children[0]})
         symbol = {'id': id, 'scope': scope[-1], 'type': 'function', 'data_type': data_type,
                   'params': params}
@@ -51,36 +68,83 @@ def symbols(node: tree.Node):
     if node.__str__() == 'declaracao_variaveis':
         data_type = node.children[0]
         if node.children[1].name == 'lista_variaveis':
-            for child in node.children[1].children:
-                if child.name == 'var':
-                    id = child.children[0].children[0]
-                    indice = child.children[1]
-                    index_size = []
-                    while True:
+            lista_var = node.children[1]
+            while True:
+                for child in lista_var.children:
+                    if child.name == 'var':
+                        id = child.children[0].children[0]
+                        indice = child.children[1]
+                        dim = 1
                         if check_type(indice) == 'flutuante':
                             print("Erro semântico: tipo do indice deve ser inteiro.")
                             return
-                        if indice.children[0].__str__() == 'indice':
-                            index_size.append(int(indice.children[2].children[0]))
-                            indice = indice.children[0]
-                        else:
-                            index_size.append(int(indice.children[1].children[0]))
-                            break;
-                    symbol = {'id': id, 'scope': scope[-1], 'type': 'var',
-                                'data_type': data_type, 'index_size': index_size}
+                        while True:
+                            if indice.children[0].__str__() == 'indice':
+                                dim += 1
+                                indice = indice.children[0]
+                            else:
+                                break;
+                        symbol = {'id': id, 'scope': scope[-1], 'type': 'var',
+                                    'data_type': data_type, 'dim': dim}
+                        if table_contains(id, scope[-1], 'var'):
+                            print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope)
+                            return
+                        symbols_table.append(symbol)
+                    elif child.name == 'ID':
+                        id = child.children[0]
+                        symbol = {'id': id, 'scope': scope[-1], 'type': 'var', 'data_type': data_type}
+                        if table_contains(id, scope[-1], 'var'):
+                            print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope)
+                            return
+                        symbols_table.append(symbol)
+                if lista_var.children[0] == 'lista_variaveis':
+                    lista_var = lista_var.children[0]
                 else:
-                    id = child.children[0]
-                    symbol = {'id': id, 'scope': scope[-1], 'type': 'var', 'data_type': data_type}
-                if table_contains(id, scope[-1], 'var'):
-                    print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope[-1])
-                    return
-                symbols_table.append(symbol)
+                    break
+
+            # for child in node.children[1].children:
+            #     if child.name == 'var':
+            #         id = child.children[0].children[0]
+            #         indice = child.children[1]
+            #         dim = 1
+            #         while True:
+            #             if indice.children[0].__str__() == 'indice':
+            #                 dim += 1
+            #                 indice = indice.children[0]
+            #             else:
+            #                 break;
+            #         if check_type(indice) == 'flutuante':
+            #             print("Erro semântico: tipo do indice deve ser inteiro.")
+            #             return
+            #         symbol = {'id': id, 'scope': scope[-1], 'type': 'var',
+            #                     'data_type': data_type, 'dim': dim}
+            #     else:
+            #         id = child.children[0]
+            #         symbol = {'id': id, 'scope': scope[-1], 'type': 'var', 'data_type': data_type}
+            #     if table_contains(id, scope[-1], 'var'):
+            #         print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope[-1])
+            #         return
+            #     symbols_table.append(symbol)
         else:
             if node.children[1].name == 'var':
                 id = node.children[1].children[0].children[0]
+                dim = 1
+                indice = node.children[1].children[1]
+                if check_type(indice) == 'flutuante':
+                    print("Erro semântico: tipo do indice deve ser inteiro ({}). Escopo: {}"
+                            .format(id, scope))
+                    return
+                while True:
+                    if indice.children[0].__str__() == 'indice':
+                        dim += 1
+                        indice = indice.children[0]
+                    else:
+                        break;
+                symbol = {'id': id, 'scope': scope[-1], 'type': 'var',
+                            'data_type': data_type, 'dim': dim}
             else:
                 id = node.children[1].children[0]
-            symbol = {'id': id, 'scope': scope[-1], 'type': 'var', 'data_type': data_type}
+                symbol = {'id': id, 'scope': scope[-1], 'type': 'var', 'data_type': data_type}
             if table_contains(id, scope[-1], 'var'):
                 print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope)
                 return
@@ -97,87 +161,99 @@ def symbols(node: tree.Node):
 
         if node.children[2].name == 'lista_argumentos':
             for child in node.children[2].children:
-                arg = child.children[0]
-                symbol = table_contains(arg, type='var')
-                if not symbol:
-                    print("Erro semântico: Esta variável não foi declarada. ->", arg ,', escopo', scope)
-                    return
-                args.append(symbol)
-        
-        elif node.children[2].name == 'ID':
-            arg = node.children[2].children[0]
-            symbol = table_contains(arg, type='var')
-            if not symbol:
-                print("Erro semântico: Esta variável não foi declarada. ->", arg)
-                return
-            args.append(symbol)
+                args.append(check_type(child))
+                # if child.name == 'ID':
+                #     arg = child.children[0]
+                #     symbol = table_contains(arg, type='var')
+                #     if not symbol:
+                #         print("Erro semântico: Esta variável não foi declarada. ->", arg ,', escopo', scope)
+                #         return
+                #     args.append(symbol['data_type'])
+                # if child.name == 'NUM_INT':
+                #     arg = child.children[0]
+                #     args.append('inteiro')
+                # if child.name == 'NUM_FLUT':
+                #     arg = child.children[0]
+                #     args.append('flutuante')
+        # elif node.children[2].name == 'ID':
+        #     arg = node.children[2].children[0]
+        #     symbol = table_contains(arg, type='var')
+        #     if not symbol:
+        #         print("Erro semântico: Esta variável não foi declarada. ->", arg)
+        #         return
+        #     args.append(symbol['data_type'])
+        else:
+            args.append(check_type(node.children[2]))
         
         if len(args) != len(function['params']):
             print("Erro semântico: Numero de argumentos não combina. ->", id)
             return
         else:
             for i in range(len(args)):
-                assignment(function['params'][i]['data_type'], args[i]['data_type'])
+                assignment(function['params'][i], args[i])
     
     if node.__str__() == 'atribuicao':
         id = None
         if node.children[0].name == 'ID':
             id = node.children[0].children[0]
             for s in scope:
-                var = table_contains(id)
-                if not var:
-                    print("Erro semântico: váriavel não foi declarada. -> ", id, ", função:", scope[-1])
-                    return
+                var = table_contains(id, scope=s)
+                if var:
+                    break
+            if not var:
+                print("Erro semântico: váriavel não foi declarada. -> ", id, ", função:", scope[-1])
+                return
         elif node.children[0].name == 'var':
             id = node.children[0].children[0].children[0]
-            var = table_contains(id)
+            for s in scope:
+                var = table_contains(id, scope=s)
+                if var:
+                    break
             if not var:
-                print("Erro semântico: váriavel não foi declarada. -> ", id, ", função:", scope)
+                print("Erro semântico: váriavel não foi declarada. -> ", id, ", função:", scope[-1])
                 return
             indice = node.children[0].children[1]
-            for i in range(len(var['index_size'])):
+            for i in range(var['dim']):
                 if indice.children[0].__str__() == 'indice':
                     indice = indice.children[0]
                 else:
-                    if i < (len(var['index_size']) - 1):
+                    if i < (var['dim'] - 1):
                         print("Erro semântico: dimensão da matriz não corresponde ao declarado.")
                         return
         
-        dtype = 'inteiro'
-        queue = [node.children[2]]
-        while(len(queue) > 0):
-            next = queue.pop(0)
+        # dtype = 'inteiro'
+        # queue = [node.children[2]]
+        # while(len(queue) > 0):
+        #     next = queue.pop(0)
+        #     if next.name == 'ID':
+        #         var = table_contains(next.children[0])
+        #         if not var:
+        #             print("Erro semântico: variável não declarada. ->", next.children[0], ", escopo", scope)
+        #             return
+        #     if dtype == 'inteiro':
+        #         if next.name == 'ID':
+        #             var = table_contains(next.children[0])
+        #             dtype = var['data_type']
+        #         elif next.name == 'NUM_INT':
+        #             dtype = 'inteiro'
+        #         elif next.name == 'NUM_FLUT':
+        #             dtype = 'flutuante'
+        #         elif next.name == 'NUM_NOTACAO':
+        #             if str(next.children[0]).find('.'):
+        #                 dtype = 'flutuante'
+        #             else:
+        #                 dtype = 'inteiro'
+        #     for child in next.children:
+        #         if isinstance(child, tree.Node):
+        #             queue.append(child)
 
-            if next.name == 'ID':
-                var = table_contains(next.children[0])
-                if not var:
-                    print("Erro semântico: variável não declarada. ->", next.children[0], ", escopo", scope)
-                    return
+        dtype = check_type(node.children[2])
+        assignment(var, dtype)
 
-            if dtype == 'inteiro':
-                if next.name == 'ID':
-                    var = table_contains(next.children[0])
-                    dtype = var['data_type']
-                elif next.name == 'NUM_INT':
-                    dtype = 'inteiro'
-                elif next.name == 'NUM_FLUT':
-                    dtype = 'flutuante'
-                elif next.name == 'NUM_NOTACAO':
-                    if str(next.children[0]).find('.'):
-                        dtype = 'flutuante'
-                    else:
-                        dtype = 'inteiro'
-
-            for child in next.children:
-                if isinstance(child, tree.Node):
-                    queue.append(child)
-
-        assignment(var['data_type'], dtype)
-
-    if node.__str__() == 'indice':
-        dtype = check_type(node)
-        if dtype != 'inteiro':
-            print("Erro semântico: o indice do array deve ser inteiro.")
+    # if node.__str__() == 'indice':
+    #     dtype = check_type(node)
+    #     if dtype != 'inteiro':
+    #         print("Erro semântico: o indice do array deve ser inteiro.")
     
     if node.__str__() == 'leia':
         if not isinstance(node, tree.Node):
@@ -196,7 +272,7 @@ def symbols(node: tree.Node):
         dtype = check_type(node)
         function = table_contains(scope[1])
         if dtype != function['data_type']:
-            print("Erro semântico: tipo retornado incompatível.")
+            print("Erro semântico: tipo retornado incompatível. Função -> ", function['id'])
             return
 
     if isinstance(node, tree.Node):
@@ -251,16 +327,6 @@ def tem_retorno(node):
             if tem_retorno(child) == True:
                 return True
 
-def search(node, name):
-    queue = [node]
-    while len(queue) > 0:
-        next = queue.pop(0)
-        if next.name == name:
-            return next
-        for child in next.children:
-            if isinstance(child, tree.Node):
-                queue.append(child)
-
 def check_type(node):
     queue = [node]
     while(len(queue) > 0):
@@ -269,17 +335,37 @@ def check_type(node):
             return 'flutuante'
         elif next.name == 'NUM_NOTACAO':
             if str(next.children[0]).find('.'):
-                return 'flutuante'
+                return 'flutuante'            
+        elif next.name == 'ID':
+            var = table_contains(next.children[0])
+            if var:
+                if var['data_type'] == 'flutuante':
+                    return 'flutuante'
+            else:
+                print("Erro semântico: variavel nao declarada. -> {}. Escopo: {}"
+                        .format(next.children[0], scope))
+                return
+        elif next.name == 'chamada_funcao':
+            var = table_contains(next.children[0].children[0])
+            if var:
+                if var['data_type'] == 'flutuante':
+                    return 'flutuante'
+                else:
+                    return 'inteiro'
+            else:
+                print("Erro semântico: função nao declarada. -> {}. Escopo: {}"
+                        .format(next.children[0].children[0], scope))
+            return
         for child in next.children:
             if isinstance(child, tree.Node):
                 queue.append(child)
     return 'inteiro'
 
-def assignment(t1, t2):
-    if t1 == 'inteiro' and t2 == 'flutuante':
-        print("Aviso: cast de flutuante para inteiro.")
-    elif t1 == 'flutuante' and t2 == 'inteiro':
-        print("Aviso: cast de inteiro para flutuante.")
+def assignment(var1, t2):
+    if var1['data_type'] == 'inteiro' and t2 == 'flutuante':
+        print("Aviso: cast de flutuante para inteiro ({}). Escopo: {}".format(var1['id'], scope))
+    elif var1['data_type'] == 'flutuante' and t2 == 'inteiro':
+        print("Aviso: cast de inteiro para flutuante ({}). Escopo {}".format(var1['id'], scope))
 
 def table_contains(id, scope=None, type=None):
     for symbol in symbols_table:
@@ -297,8 +383,17 @@ def table_contains(id, scope=None, type=None):
                     return symbol
     return False
 
+def tem_principal():
+    if table_contains('principal', scope='programa', type='function'):
+        return True
+    return False    
+
 symbols(root)
 for func in functions:
     if tem_retorno(func) != True:
-        print("Erro semântico: função sem retorno.")
-print(symbols_table)
+        print("Erro semântico: função sem retorno ({}).".format(func.children[1].children[0].children[0]))
+if not tem_principal():
+    print("Erro semântico: o programa nao tem funcao principal.")
+
+# for symbol in symbols_table:
+#     print(symbol)
