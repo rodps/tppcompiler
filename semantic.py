@@ -30,7 +30,7 @@ def symbols(node: tree.Node):
                         if table_contains(var['id'], scope=id, type='var'):
                             print("Erro semântico: já existe uma variável com o mesmo nome ('{}'). Escopo: {}"
                                     .format(var['id'], scope))
-                            return
+                            return False
                         symbols_table.append(var)
                         params.append({'data_type': child.children[0], 'id': child.children[1].children[0]})
                 
@@ -48,7 +48,7 @@ def symbols(node: tree.Node):
                   'params': params}
         if symbol in symbols_table:
             print('Erro semântico: Já existe uma função com o mesmo nome. ->', id)
-            return
+            return False
         symbols_table.append(symbol)
         scope.append(id)
     
@@ -77,7 +77,7 @@ def symbols(node: tree.Node):
                         dim = 1
                         if check_type(indice) == 'flutuante':
                             print("Erro semântico: tipo do indice deve ser inteiro.")
-                            return
+                            return False
                         while True:
                             if indice.children[0].__str__() == 'indice':
                                 dim += 1
@@ -88,14 +88,14 @@ def symbols(node: tree.Node):
                                     'data_type': data_type, 'dim': dim}
                         if table_contains(id, scope[-1], 'var'):
                             print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope)
-                            return
+                            return False
                         symbols_table.append(symbol)
                     elif child.name == 'ID':
                         id = child.children[0]
                         symbol = {'id': id, 'scope': scope[-1], 'type': 'var', 'data_type': data_type}
                         if table_contains(id, scope[-1], 'var'):
                             print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope)
-                            return
+                            return False
                         symbols_table.append(symbol)
                 if lista_var.children[0] == 'lista_variaveis':
                     lista_var = lista_var.children[0]
@@ -133,7 +133,7 @@ def symbols(node: tree.Node):
                 if check_type(indice) == 'flutuante':
                     print("Erro semântico: tipo do indice deve ser inteiro ({}). Escopo: {}"
                             .format(id, scope))
-                    return
+                    return False
                 while True:
                     if indice.children[0].__str__() == 'indice':
                         dim += 1
@@ -147,7 +147,7 @@ def symbols(node: tree.Node):
                 symbol = {'id': id, 'scope': scope[-1], 'type': 'var', 'data_type': data_type}
             if table_contains(id, scope[-1], 'var'):
                 print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope)
-                return
+                return False
             symbols_table.append(symbol)
 
     if node.__str__() == 'chamada_funcao':
@@ -157,7 +157,7 @@ def symbols(node: tree.Node):
 
         if not function:
             print("Erro semântico: Esta função não foi declarada. ->", id)
-            return
+            return False
 
         if node.children[2].name == 'lista_argumentos':
             for child in node.children[2].children:
@@ -187,7 +187,7 @@ def symbols(node: tree.Node):
         
         if len(args) != len(function['params']):
             print("Erro semântico: Numero de argumentos não combina. ->", id)
-            return
+            return False
         else:
             for i in range(len(args)):
                 assignment(function['params'][i], args[i])
@@ -202,7 +202,7 @@ def symbols(node: tree.Node):
                     break
             if not var:
                 print("Erro semântico: váriavel não foi declarada. -> ", id, ", função:", scope[-1])
-                return
+                return False
         elif node.children[0].name == 'var':
             id = node.children[0].children[0].children[0]
             for s in scope:
@@ -211,7 +211,7 @@ def symbols(node: tree.Node):
                     break
             if not var:
                 print("Erro semântico: váriavel não foi declarada. -> ", id, ", função:", scope[-1])
-                return
+                return False
             indice = node.children[0].children[1]
             for i in range(var['dim']):
                 if indice.children[0].__str__() == 'indice':
@@ -219,7 +219,7 @@ def symbols(node: tree.Node):
                 else:
                     if i < (var['dim'] - 1):
                         print("Erro semântico: dimensão da matriz não corresponde ao declarado.")
-                        return
+                        return False
         
         # dtype = 'inteiro'
         # queue = [node.children[2]]
@@ -257,23 +257,23 @@ def symbols(node: tree.Node):
     
     if node.__str__() == 'leia':
         if not isinstance(node, tree.Node):
-            return
+            return False
         if node.children[2].name == 'ID':
             if not procura_variavel(node.children[2].children[0]):
                 print('Erro semântico: variavel nao declarada na funcao leia')
-                return
+                return False
         if node.children[2].name == 'var':
             if not checa_array(node.children[2]):
-                return
+                return False
 
     if node.__str__() == 'retorna':
         if not isinstance(node, tree.Node):
-            return
+            return False
         dtype = check_type(node)
         function = table_contains(scope[1])
         if dtype != function['data_type']:
             print("Erro semântico: tipo retornado incompatível. Função -> ", function['id'])
-            return
+            return False
 
     if isinstance(node, tree.Node):
         for child in node.children:
@@ -388,12 +388,15 @@ def tem_principal():
         return True
     return False    
 
-symbols(root)
+if symbols(root) == False:
+    sys.exit()
 for func in functions:
     if tem_retorno(func) != True:
-        print("Erro semântico: função sem retorno ({}).".format(func.children[1].children[0].children[0]))
+        print("Erro semântico: função sem retorno ({})."
+            .format(func.children[1].children[0].children[0]))
+        sys.exit()
 if not tem_principal():
-    print("Erro semântico: o programa nao tem funcao principal.")
+    sys.exit("Erro semântico: o programa nao tem funcao principal.")
 
 # for symbol in symbols_table:
 #     print(symbol)
