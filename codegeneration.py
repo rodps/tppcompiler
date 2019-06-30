@@ -4,6 +4,7 @@ from tree import Node
 
 module = ir.Module('modulo.bc')
 functions = []
+ifs = []
 vars = []
 
 class Function():
@@ -13,13 +14,20 @@ class Function():
         self.entryBlock = entryBlock
         self.exitBlock = exitBlock
 
+class Se():
+    def __init__(self, id, iftrue, iffalse, ifend):
+        self.id = id
+        self.iftrue = iftrue
+        self.iffalse = iffalse
+        self.ifend = ifend
+
 class Var():
-    def __init__(self, id, var, block):
+    def __init__(self, id, var, scope):
         self.id = id
         self.var = var
-        self.block = block
+        self.scope = scope
 
-def percorreArvore(node: Node, scope=None):
+def percorreArvore(node: Node, scope=['global'], builder=None):
 
     if node.__str__() == 'declaracao_variaveis':
         ids = search(node.children[1], 'ID')
@@ -30,11 +38,13 @@ def percorreArvore(node: Node, scope=None):
                 v.initializer = ir.Constant(ir.IntType(32), 0)
                 v.linkage = 'common'
                 v.align = 4
+                vars.insert(0, Var(var['id'], v, scope[-1]))
             else:
-                func = get_function(scope)
-                builder = ir.IRBuilder(func.entryBlock)
+                # func = get_function(scope[-1])
+                # builder = ir.IRBuilder(func.entryBlock)
                 v = builder.alloca(ir.IntType(32), name=var['id'])
                 v.align = 4
+                vars.insert(0, Var(var['id'], v, scope[-1]))
             symbols_table.remove(var)
     
     if node.__str__() == 'declaracao_funcao':
@@ -62,24 +72,69 @@ def percorreArvore(node: Node, scope=None):
         entryBlock = f.append_basic_block('entry')
         endBasicBlock = f.append_basic_block('exit')
         functions.append(Function(id, f, entryBlock, endBasicBlock))
-        scope = id
+        builder = ir.IRBuilder(entryBlock)
+        scope.append(id)
 
     if node.__str__() == 'se':
-        func = get_function(scope)
-        iftrue = func.func.append_basic_block('iftrue')
+        if not isinstance(node, Node):
+            return
+        func = get_function(scope[-1])
+        iftrue = func.func.append_basic_block('iftrue' + str(node.id))
         if len(node.children) > 5:
-            iffalse = func.func.append_basic_block('iffalse')
-        ifend = func.func.append_basic_block('ifend')
+            iffalse = func.func.append_basic_block('iffalse' + str(node.id))
+        ifend = func.func.append_basic_block('ifend' + str(node.id))
 
-        op = node.children[1]
-        if node.children[0].name == 'ID':
-            v = get_var(node.children[0].children[0])
+        ifs.append(Se('se'+str(node.id), iftrue, iffalse, ifend))
+        scope.append('se' + str(node.id))
 
+        expressao = node.children[1]
+        op = expressao.children[1]
+        # builder = ir.IRBuilder(func.entryBlock)
 
+        if expressao.children[0].name == 'ID':
+            v1 = get_var(expressao.children[0].children[0])
+            v1_cmp = builder.load(v1.var, 'v1_cmp', align=4)
+        elif expressao.children[0].name == 'NUM_INT':
+            v1_cmp = ir.Constant(ir.IntType(32), int(expressao.children[0].children[0]))
+        elif expressao.children[0].name == 'NUM_FLUT':
+            v1_cmp = ir.Constant(ir.FloatType(), float(expressao.children[0].children[0]))
 
+        if expressao.children[2].name == 'ID':
+            v2 = get_var(expressao.children[2].children[0])
+            v2_cmp = builder.load(v2.var, 'v2_cmp', align=4)
+        elif expressao.children[2].name == 'NUM_INT':
+            v2_cmp = ir.Constant(ir.IntType(32), int(expressao.children[2].children[0]))
+        elif expressao.children[2].name == 'NUM_FLUT':
+            v2_cmp = ir.Constant(ir.FloatType(), float(expressao.children[2].children[0]))
+
+        if_test = builder.icmp_signed(op, v1_cmp, v2_cmp)
+        if len(node.children) > 5:
+            builder.cbranch(if_test, iftrue, iffalse)
+        else:
+            builder.cbranch(if_test, iftrue, ifend)
+
+    if node.__str__() == 'então':
+        se = get_if(scope[-1])
+        builder.position_at_end(se.iftrue)
+    
+    if node.__str__() == 'senão':
+        se = get_if(scope[-1])
+        builder.position_at_end(se.iffalse)
+
+    # if node.__str__() == 'atribuicao':
+    #     ...
+            
+    if node.__str__() == 'fim':
+        for v in vars:
+            if v.scope == scope[-1]:
+                vars.remove(v)
+        scope.pop()
+        if len(scope) > 1:
+            builder.position_at_end(get_function(scope[1]).entryBlock)
+              
     if isinstance(node, Node):
         for child in node.children:
-            percorreArvore(child, scope)
+            percorreArvore(child, scope, builder)
 
 
 def search(root: Node, node_name: str) -> list:
@@ -114,6 +169,11 @@ def get_function(id) -> Function:
     for f in functions:
         if(f.id == id):
             return f
+
+def get_if(id) -> Se:
+    for i in ifs:
+        if(i.id == id):
+            return i
 
 def get_var(id) -> Var:
     for v in vars:
