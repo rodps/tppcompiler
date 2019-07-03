@@ -121,9 +121,10 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
         se = get_if(scope[-1])
         builder.position_at_end(se.iffalse)
 
-    # if node.__str__() == 'atribuicao':
-    #     ...
-            
+    if node.__str__() == 'atribuicao':
+        build_expressao(node.children[2], builder)
+        return
+
     if node.__str__() == 'fim':
         for v in vars:
             if v.scope == scope[-1]:
@@ -136,6 +137,25 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
         for child in node.children:
             percorreArvore(child, scope, builder)
 
+def build_expressao(node, builder):
+    if node.name == 'ID':
+        var = get_var(node.children[0]).var
+        print(var)
+        return builder.load(var, "")
+    if node.name == 'NUM_INT':
+        return ir.Constant(ir.IntType(32), int(node.children[0]))
+    if node.name == 'NUM_FLUT':
+        return ir.Constant(ir.FloatType(), float(node.children[0]))
+    if node.name == 'expressao_aditiva':
+        return builder.add(build_expressao(node.children[0], builder), build_expressao(node.children[2], builder))
+    if node.name == 'expressao_multiplicativa':
+        return builder.mul(build_expressao(node.children[0], builder), build_expressao(node.children[2], builder))
+    if node.name == 'fator':
+        return build_expressao(node.children[1], builder)
+    
+    # for child in node.children:
+    #     if isinstance(child, Node):
+    #         return expressao(child, builder)
 
 def search(root: Node, node_name: str) -> list:
     queue = [root]
