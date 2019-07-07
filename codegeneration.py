@@ -29,11 +29,11 @@ class Var():
         self.scope = scope
 
 class Repita():
-    def __init__(self, id, block, retorno, expressao):
+    def __init__(self, id, block, end, expressao):
         self.id = id
         self.block = block
         self.expressao = expressao
-        self.retorno = retorno
+        self.end = end
 
 def percorreArvore(node: Node, scope=['global'], builder=None):
 
@@ -139,21 +139,33 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
             if v.scope == scope[-1]:
                 vars.remove(v)
         scope.pop()
+
+        # if len(scope) == 2:
+        #     builder.branch(get_function(scope[1]).exitBlock)
+
         if len(scope) > 1:
             builder.position_at_end(get_function(scope[1]).entryBlock)
     
     if node.__str__() == 'repita':
         if isinstance(node, Node):
             id = 'repita'+str(node.id)
-            block = builder.append_basic_block(id)
-            b = builder.branch(block)
-            builder.position_at_end(block)
-            repeat.append(Repita(id, block, b, node.children[3]))
+            repita = builder.append_basic_block(id)
+            repitaend = builder.append_basic_block(id+"end")
+            b = builder.branch(repita)
+            builder.position_at_end(repita)
+            repeat.append(Repita(id, repita, repitaend, node.children[3]))
     
     if node.__str__() == 'até':
         repita = repeat.pop()
         iftest = build_expressao(repita.expressao, builder)
-        builder.cbranch(iftest, repita.block, repita.retorno)
+        builder.cbranch(iftest, repita.block, repita.end)
+        builder.position_at_end(repita.end)
+
+    if node.__str__() == 'retorna':
+        if not isinstance(node, Node):
+            return
+        val = build_expressao(node.children[2], builder)
+        builder.ret(val)
               
     if isinstance(node, Node):
         for child in node.children:

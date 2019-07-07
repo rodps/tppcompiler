@@ -15,6 +15,7 @@ iftrue143:
   store i32 1, i32* %"fat"
   br label %"repita115"
 iffalse143:
+  ret i32 0
 ifend143:
 repita115:
   %".7" = load i32, i32* %"fat"
@@ -26,11 +27,15 @@ repita115:
   store i32 %".12", i32* @"n"
   %".14" = load i32, i32* @"n"
   %".15" = icmp eq i32 %".14", 0
-  br i1 %".15", label %"repita115", void %".6"
+  br i1 %".15", label %"repita115", label %"repita115end"
+repita115end:
+  %".17" = load i32, i32* %"fat"
+  ret i32 %".17"
 }
 
 define i32 @"principal"() 
 {
 entry:
+  ret i32 0
 exit:
 }
