@@ -1,19 +1,44 @@
 from semantic import symbols_table, root
-from llvmlite import ir
+from llvmlite import ir, binding
 from tree import Node
 
-module = ir.Module('modulo.bc')
+module = ir.Module('code.bc')
+module.triple = binding.get_default_triple()
+
+# binding.initialize()
+# binding.initialize_native_target()
+# binding.initialize_native_asmprinter()
+
+# target = binding.Target.from_triple("x86_64-pc-linux-gnu")
+# target_machine = target.create_target_machine()
+
+# backing_mod = binding.parse_assembly("")
+# engine = binding.create_mcjit_compiler(backing_mod, target_machine)
+
+ftype = ir.FunctionType(ir.IntType(32), [])
+leiaInteiro = ir.Function(module, ftype, "leiaInteiro")
+
+ftype = ir.FunctionType(ir.FloatType(), [])
+leiaFlutuante = ir.Function(module, ftype, "leiaFlutuante")
+
+ftype = ir.FunctionType(ir.VoidType(), [ir.IntType(32)])
+escrevaInteiro = ir.Function(module, ftype, "escrevaInteiro")
+
+ftype = ir.FunctionType(ir.VoidType(), [ir.FloatType()])
+escrevaFlutuante = ir.Function(module, ftype, "escrevaFlutuante")
+
 functions = []
 ifs = []
 vars = []
 repeat = []
 
 class Function():
-    def __init__(self, id: str, func: ir.Function, entryBlock: ir.Block, exitBlock: ir.Block):
+    def __init__(self, id: str, func: ir.Function, entryBlock: ir.Block, exitBlock: ir.Block, retorno):
         self.id = id
         self.func = func
         self.entryBlock = entryBlock
         self.exitBlock = exitBlock
+        self.retorno = retorno
 
 class Se():
     def __init__(self, id, iftrue, iffalse, ifend):
@@ -23,10 +48,11 @@ class Se():
         self.ifend = ifend
 
 class Var():
-    def __init__(self, id, var, scope):
+    def __init__(self, id, var, scope, type):
         self.id = id
         self.var = var
         self.scope = scope
+        self.type = type
 
 class Repita():
     def __init__(self, id, block, end, expressao):
@@ -46,13 +72,13 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
                 v.initializer = ir.Constant(ir.IntType(32), 0)
                 v.linkage = 'common'
                 v.align = 4
-                vars.insert(0, Var(var['id'], v, scope[-1]))
+                vars.insert(0, Var(var['id'], v, scope[-1], ir.IntType(32)))
             else:
                 # func = get_function(scope[-1])
                 # builder = ir.IRBuilder(func.entryBlock)
                 v = builder.alloca(ir.IntType(32), name=var['id'])
                 v.align = 4
-                vars.insert(0, Var(var['id'], v, scope[-1]))
+                vars.insert(0, Var(var['id'], v, scope[-1], ir.IntType(32)))
             symbols_table.remove(var)
     
     if node.__str__() == 'declaracao_funcao':
@@ -76,17 +102,36 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
                 params += (ir.VoidType(),)
 
         t_func = ir.FunctionType(ftype, params)
+        if id == 'principal':
+            id = 'main'
         f = ir.Function(module, t_func, id)
+
         entryBlock = f.append_basic_block('entry')
         endBasicBlock = f.append_basic_block('exit')
-        functions.append(Function(id, f, entryBlock, endBasicBlock))
+        
         builder = ir.IRBuilder(entryBlock)
+        Zero = ir.Constant(ir.IntType(32), 0)
+        returnVal = builder.alloca(ir.IntType(32), name='retorno')
+        builder.store(Zero, returnVal)
+
+        for i in range(len(func['params'])):
+            v = builder.alloca(ir.IntType(32), name=func['params'][i]['id'])
+            v.align = 4
+            builder.store(f.args[i], v)
+            vars.insert(0, Var(func['params'][i]['id'], v, id, ir.IntType(32)))
+
+        functions.append(Function(id, f, entryBlock, endBasicBlock, returnVal))
+
         scope.append(id)
+    
+    if node.__str__() == 'chamada_funcao':
+        func = chamada_funcao(node, builder)
+        builder.call(func[0], func[1])
 
     if node.__str__() == 'se':
         if not isinstance(node, Node):
             return
-        func = get_function(scope[-1])
+        func = get_function(scope[1])
         iftrue = func.func.append_basic_block('iftrue' + str(node.id))
         if len(node.children) > 5:
             iffalse = func.func.append_basic_block('iffalse' + str(node.id))
@@ -100,7 +145,7 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
 
         if expressao.children[0].name == 'ID':
             v1 = get_var(expressao.children[0].children[0])
-            v1_cmp = builder.load(v1.var, 'v1_cmp', align=4)
+            v1_cmp = builder.load(v1.var, align=4)
         elif expressao.children[0].name == 'NUM_INT':
             v1_cmp = ir.Constant(ir.IntType(32), int(expressao.children[0].children[0]))
         elif expressao.children[0].name == 'NUM_FLUT':
@@ -126,6 +171,7 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
     
     if node.__str__() == 'senão':
         se = get_if(scope[-1])
+        builder.branch(se.ifend)
         builder.position_at_end(se.iffalse)
 
     if node.__str__() == 'atribuicao':
@@ -135,16 +181,28 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
         return
 
     if node.__str__() == 'fim':
+        remove = []
         for v in vars:
             if v.scope == scope[-1]:
-                vars.remove(v)
+                remove.append(v)
+        for v in remove:
+            vars.remove(v)
+        if len(scope) > 2:
+            ifend = get_if(scope[-1]).ifend
+            builder.branch(ifend)
+            builder.position_at_end(ifend)
+        else:
+            func = get_function(scope[1])
+            builder.branch(func.exitBlock)
+            builder.position_at_end(func.exitBlock)
+            builder.ret(builder.load(func.retorno, ""))
         scope.pop()
 
         # if len(scope) == 2:
         #     builder.branch(get_function(scope[1]).exitBlock)
 
-        if len(scope) > 1:
-            builder.position_at_end(get_function(scope[1]).entryBlock)
+        # if len(scope) > 1:
+        #     builder.position_at_end(get_function(scope[1]).entryBlock)
     
     if node.__str__() == 'repita':
         if isinstance(node, Node):
@@ -158,15 +216,37 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
     if node.__str__() == 'até':
         repita = repeat.pop()
         iftest = build_expressao(repita.expressao, builder)
-        builder.cbranch(iftest, repita.block, repita.end)
+        builder.cbranch(iftest, repita.end, repita.block)
         builder.position_at_end(repita.end)
 
     if node.__str__() == 'retorna':
         if not isinstance(node, Node):
             return
         val = build_expressao(node.children[2], builder)
-        builder.ret(val)
-              
+        # builder.ret(val)
+        func = get_function(scope[1])
+        builder.store(val, func.retorno)
+
+    if node.__str__() == 'leia':
+        if not isinstance(node, Node):
+            return
+        v = get_var(node.children[2].children[0])
+        if v.type == ir.IntType(32):
+            call = builder.call(leiaInteiro, [])
+        if v.type == ir.FloatType():
+            call = builder.call(leiaFlutuante, [])
+        builder.store(call, v.var)
+
+    if node.__str__() == 'escreva':
+        if not isinstance(node, Node):
+            return
+        v = build_expressao(node.children[2], builder)
+        if v.type == ir.IntType(32):
+            builder.call(escrevaInteiro, [v])
+        if v.type == ir.FloatType():
+            builder.call(escrevaFlutuante, [v])
+        return
+
     if isinstance(node, Node):
         for child in node.children:
             percorreArvore(child, scope, builder)
@@ -179,8 +259,14 @@ def build_expressao(node, builder):
         return ir.Constant(ir.IntType(32), int(node.children[0]))
     if node.name == 'NUM_FLUT':
         return ir.Constant(ir.FloatType(), float(node.children[0]))
+    if node.name == 'chamada_funcao':
+        func = chamada_funcao(node, builder)
+        return builder.call(func[0], func[1])
     if node.name == 'expressao_aditiva':
-        return builder.add(build_expressao(node.children[0], builder), build_expressao(node.children[2], builder))
+        if node.children[1] == '+':
+            return builder.add(build_expressao(node.children[0], builder), build_expressao(node.children[2], builder))
+        if node.children[1] == '-':
+            return builder.sub(build_expressao(node.children[0], builder), build_expressao(node.children[2], builder))
     if node.name == 'expressao_multiplicativa':
         return builder.mul(build_expressao(node.children[0], builder), build_expressao(node.children[2], builder))
     if node.name == 'expressao_simples':
@@ -239,6 +325,21 @@ def get_var(id) -> Var:
     for v in vars:
         if v.id == id:
             return v
+
+def chamada_funcao(node, builder):
+    func = get_function(node.children[0].children[0])
+    args = []
+    queue = [node.children[2]]
+    while len(queue) > 0:
+        next = queue.pop(0)
+        arg = build_expressao(next, builder)
+        if arg != None:
+            args.append(arg)
+        for child in next.children:
+            if isinstance(child, Node):
+                queue.append(child)
+    
+    return (func.func, args)
 
 percorreArvore(root)
 

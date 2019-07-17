@@ -1,41 +1,45 @@
-; ModuleID = "modulo.bc"
-target triple = "unknown-unknown-unknown"
+; ModuleID = "code.bc"
+target triple = "x86_64-unknown-linux-gnu"
 target datalayout = ""
 
-@"n" = common global i32 0, align 4
-define i32 @"fatorial"(i32 %".1") 
-{
-entry:
-  %"fat" = alloca i32, align 4
-  %"v1_cmp" = load i32, i32* @"n", align 4
-  %".3" = icmp sgt i32 %"v1_cmp", 0
-  br i1 %".3", label %"iftrue143", label %"iffalse143"
-exit:
-iftrue143:
-  store i32 1, i32* %"fat"
-  br label %"repita115"
-iffalse143:
-  ret i32 0
-ifend143:
-repita115:
-  %".7" = load i32, i32* %"fat"
-  %".8" = load i32, i32* @"n"
-  %".9" = mul i32 %".7", %".8"
-  store i32 %".9", i32* %"fat"
-  %".11" = load i32, i32* @"n"
-  %".12" = add i32 %".11", 1
-  store i32 %".12", i32* @"n"
-  %".14" = load i32, i32* @"n"
-  %".15" = icmp eq i32 %".14", 0
-  br i1 %".15", label %"repita115", label %"repita115end"
-repita115end:
-  %".17" = load i32, i32* %"fat"
-  ret i32 %".17"
-}
+declare i32 @"leiaInteiro"() 
 
-define i32 @"principal"() 
+declare float @"leiaFlutuante"() 
+
+declare void @"escrevaInteiro"(i32 %".1") 
+
+declare void @"escrevaFlutuante"(float %".1") 
+
+@"a" = common global i32 0, align 4
+define i32 @"main"() 
 {
 entry:
-  ret i32 0
+  %"retorno" = alloca i32
+  store i32 0, i32* %"retorno"
+  %"ret" = alloca i32, align 4
+  store i32 10, i32* @"a"
+  %".4" = load i32, i32* @"a", align 4
+  %".5" = icmp sgt i32 %".4", 5
+  br i1 %".5", label %"iftrue119", label %"iffalse119"
 exit:
+  %".19" = load i32, i32* %"retorno"
+  ret i32 %".19"
+iftrue119:
+  %".7" = load i32, i32* @"a", align 4
+  %".8" = icmp slt i32 %".7", 20
+  br i1 %".8", label %"iftrue100", label %"iffalse100"
+iffalse119:
+  store i32 0, i32* %"ret"
+  br label %"ifend119"
+ifend119:
+  store i32 0, i32* %"retorno"
+  br label %"exit"
+iftrue100:
+  store i32 1, i32* %"ret"
+  br label %"ifend100"
+iffalse100:
+  store i32 2, i32* %"ret"
+  br label %"ifend100"
+ifend100:
+  br label %"ifend119"
 }
