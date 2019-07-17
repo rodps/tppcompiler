@@ -196,7 +196,6 @@ def symbols(node: tree.Node):
             args.append(check_type(node.children[2]))
         
         if len(args) != len(function['params']):
-            print(args, function['params'])
             print("Erro semântico: Numero de argumentos não combina. ->", id)
             return False
         else:

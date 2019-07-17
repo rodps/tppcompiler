@@ -68,17 +68,27 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
         for id in ids:
             var = get_symbol(id.children[0], type='var')
             if var['scope'] == 'programa':
-                v = ir.GlobalVariable(module, ir.IntType(32), var['id'])
-                v.initializer = ir.Constant(ir.IntType(32), 0)
-                v.linkage = 'common'
-                v.align = 4
-                vars.insert(0, Var(var['id'], v, scope[-1], ir.IntType(32)))
+                if var['data_type'] == 'inteiro':
+                    v = ir.GlobalVariable(module, ir.IntType(32), var['id'])
+                    v.initializer = ir.Constant(ir.IntType(32), 0)
+                    v.linkage = 'common'
+                    v.align = 4
+                    vars.insert(0, Var(var['id'], v, scope[-1], ir.IntType(32)))
+                else:
+                    v = ir.GlobalVariable(module, ir.FloatType(), var['id'])
+                    v.initializer = ir.Constant(ir.FloatType(), 0)
+                    v.linkage = 'common'
+                    v.align = 4
+                    vars.insert(0, Var(var['id'], v, scope[-1], ir.FloatType()))
             else:
-                # func = get_function(scope[-1])
-                # builder = ir.IRBuilder(func.entryBlock)
-                v = builder.alloca(ir.IntType(32), name=var['id'])
-                v.align = 4
-                vars.insert(0, Var(var['id'], v, scope[-1], ir.IntType(32)))
+                if var['data_type'] == 'inteiro':
+                    v = builder.alloca(ir.IntType(32), name=var['id'])
+                    v.align = 4
+                    vars.insert(0, Var(var['id'], v, scope[-1], ir.IntType(32)))
+                else:
+                    v = builder.alloca(ir.FloatType(), name=var['id'])
+                    v.align = 4
+                    vars.insert(0, Var(var['id'], v, scope[-1], ir.FloatType()))
             symbols_table.remove(var)
     
     if node.__str__() == 'declaracao_funcao':
@@ -115,8 +125,12 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
         builder.store(Zero, returnVal)
 
         for i in range(len(func['params'])):
-            v = builder.alloca(ir.IntType(32), name=func['params'][i]['id'])
-            v.align = 4
+            if func['params'][i]['data_type'] == 'inteiro':
+                v = builder.alloca(ir.IntType(32), name=func['params'][i]['id'])
+                v.align = 4
+            else:
+                v = builder.alloca(ir.FloatType(), name=func['params'][i]['id'])
+                v.align = 4
             builder.store(f.args[i], v)
             vars.insert(0, Var(func['params'][i]['id'], v, id, ir.IntType(32)))
 
@@ -181,8 +195,8 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
 
     if node.__str__() == 'atribuicao':
         exp = build_expressao(node.children[2], builder)
-        var = get_var(node.children[0].children[0]).var
-        builder.store(exp, var)
+        var = get_var(node.children[0].children[0])
+        builder.store(exp, var.var)
         return
 
     if node.__str__() == 'fim':
@@ -271,7 +285,14 @@ def build_expressao(node, builder):
         return ir.Constant(ir.FloatType(), float(node.children[0]))
     if node.name == 'chamada_funcao':
         func = chamada_funcao(node, builder)
-        return builder.call(func[0], func[1])
+        params = func[0].args
+        args = func[1]
+        for i in range(len(params)):
+            if params[i].type == ir.FloatType() and args[i].type == ir.IntType(32):
+                args[i] = builder.sitofp(args[i], ir.FloatType())
+            if params[i].type == ir.IntType(32) and args[i].type == ir.FloatType():
+                args[i] = builder.fptosi(args[i], ir.IntType(32))
+        return builder.call(func[0], args)
     if node.name == 'expressao_aditiva':
         if node.children[1] == '+':
             return builder.add(build_expressao(node.children[0], builder), build_expressao(node.children[2], builder))
