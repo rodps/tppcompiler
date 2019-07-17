@@ -401,7 +401,7 @@ def tem_principal():
 if symbols(root) == False:
     sys.exit()
 for func in functions:
-    if tem_retorno(func) != True:
+    if tem_retorno(func) != True and func.children[0] != 'vazio':
         print("Erro semântico: função sem retorno ({})."
             .format(func.children[1].children[0].children[0]))
         sys.exit()
