@@ -135,43 +135,48 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
         iftrue = func.func.append_basic_block('iftrue' + str(node.id))
         if len(node.children) > 5:
             iffalse = func.func.append_basic_block('iffalse' + str(node.id))
+        else:
+            iffalse = None
         ifend = func.func.append_basic_block('ifend' + str(node.id))
 
         ifs.append(Se('se'+str(node.id), iftrue, iffalse, ifend))
         scope.append('se' + str(node.id))
 
         expressao = node.children[1]
-        op = expressao.children[1]
+        # op = expressao.children[1]
 
-        if expressao.children[0].name == 'ID':
-            v1 = get_var(expressao.children[0].children[0])
-            v1_cmp = builder.load(v1.var, align=4)
-        elif expressao.children[0].name == 'NUM_INT':
-            v1_cmp = ir.Constant(ir.IntType(32), int(expressao.children[0].children[0]))
-        elif expressao.children[0].name == 'NUM_FLUT':
-            v1_cmp = ir.Constant(ir.FloatType(), float(expressao.children[0].children[0]))
+        # if expressao.children[0].name == 'ID':
+        #     v1 = get_var(expressao.children[0].children[0])
+        #     v1_cmp = builder.load(v1.var, align=4)
+        # elif expressao.children[0].name == 'NUM_INT':
+        #     v1_cmp = ir.Constant(ir.IntType(32), int(expressao.children[0].children[0]))
+        # elif expressao.children[0].name == 'NUM_FLUT':
+        #     v1_cmp = ir.Constant(ir.FloatType(), float(expressao.children[0].children[0]))
 
-        if expressao.children[2].name == 'ID':
-            v2 = get_var(expressao.children[2].children[0])
-            v2_cmp = builder.load(v2.var, 'v2_cmp', align=4)
-        elif expressao.children[2].name == 'NUM_INT':
-            v2_cmp = ir.Constant(ir.IntType(32), int(expressao.children[2].children[0]))
-        elif expressao.children[2].name == 'NUM_FLUT':
-            v2_cmp = ir.Constant(ir.FloatType(), float(expressao.children[2].children[0]))
+        # if expressao.children[2].name == 'ID':
+        #     v2 = get_var(expressao.children[2].children[0])
+        #     v2_cmp = builder.load(v2.var, 'v2_cmp', align=4)
+        # elif expressao.children[2].name == 'NUM_INT':
+        #     v2_cmp = ir.Constant(ir.IntType(32), int(expressao.children[2].children[0]))
+        # elif expressao.children[2].name == 'NUM_FLUT':
+        #     v2_cmp = ir.Constant(ir.FloatType(), float(expressao.children[2].children[0]))
 
-        if_test = builder.icmp_signed(op, v1_cmp, v2_cmp)
+        # if_test = builder.icmp_signed(op, v1_cmp, v2_cmp)
+        if_test = build_expressao(expressao, builder)
         if len(node.children) > 5:
             builder.cbranch(if_test, iftrue, iffalse)
         else:
             builder.cbranch(if_test, iftrue, ifend)
+        builder.position_at_end(iftrue)
 
-    if node.__str__() == 'então':
-        se = get_if(scope[-1])
-        builder.position_at_end(se.iftrue)
+    # if node.__str__() == 'então':
+    #     se = get_if(scope[-1])
+    #     builder.position_at_end(se.iftrue)
     
     if node.__str__() == 'senão':
         se = get_if(scope[-1])
-        builder.branch(se.ifend)
+        if not builder.block.is_terminated:
+            builder.branch(se.ifend)
         builder.position_at_end(se.iffalse)
 
     if node.__str__() == 'atribuicao':
@@ -189,11 +194,13 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
             vars.remove(v)
         if len(scope) > 2:
             ifend = get_if(scope[-1]).ifend
-            builder.branch(ifend)
+            if not builder.block.is_terminated:
+                builder.branch(ifend)
             builder.position_at_end(ifend)
         else:
             func = get_function(scope[1])
-            builder.branch(func.exitBlock)
+            if not builder.block.is_terminated:    
+                builder.branch(func.exitBlock)
             builder.position_at_end(func.exitBlock)
             builder.ret(builder.load(func.retorno, ""))
         scope.pop()
@@ -226,6 +233,9 @@ def percorreArvore(node: Node, scope=['global'], builder=None):
         # builder.ret(val)
         func = get_function(scope[1])
         builder.store(val, func.retorno)
+        # if not builder.block.is_terminated:
+        builder.branch(func.exitBlock)
+        return
 
     if node.__str__() == 'leia':
         if not isinstance(node, Node):
@@ -276,9 +286,23 @@ def build_expressao(node, builder):
         a_cmp = build_expressao(node.children[0], builder)
         b_cmp = build_expressao(node.children[2], builder)
         return builder.icmp_signed(op, a_cmp, b_cmp)
+    if node.name == 'expressao_logica':
+        op = node.children[1]
+        a_cmp = build_expressao(node.children[0], builder)
+        b_cmp = build_expressao(node.children[2], builder)
+        if op == '&&':
+            return builder.and_(a_cmp, b_cmp)
+        if op == '||':
+            return builder.or_(a_cmp, b_cmp)
+    if node.name == 'expressao_unaria':
+        op = node.children[0]
+        value = build_expressao(node.children[1], builder)
+        if op == '!':
+            return builder.not_(value)
     if node.name == 'fator':
         return build_expressao(node.children[1], builder)
     
+    print('none', node.name)
     # for child in node.children:
     #     if isinstance(child, Node):
     #         return expressao(child, builder)
@@ -330,15 +354,30 @@ def chamada_funcao(node, builder):
     func = get_function(node.children[0].children[0])
     args = []
     queue = [node.children[2]]
-    while len(queue) > 0:
-        next = queue.pop(0)
-        arg = build_expressao(next, builder)
-        if arg != None:
-            args.append(arg)
-        for child in next.children:
-            if isinstance(child, Node):
-                queue.append(child)
-    
+    if node.children[2].name == 'lista_argumentos':
+        lista_args = node.children[2]
+        next = lista_args
+        while True:
+            for arg in lista_args.children:
+                if arg.name == 'lista_argumentos':
+                    next = arg
+                else:
+                    args.append(build_expressao(arg, builder))
+            if lista_args != next:
+                lista_args = next
+            else:
+                break
+    else:
+        arg = node.children[2]
+        args.append(build_expressao(arg, builder))
+    # while len(queue) > 0:
+    #     next = queue.pop(0)
+    #     arg = build_expressao(next, builder)
+    #     if arg != None:
+    #         args.append(arg)
+    #     for child in next.children:
+    #         if isinstance(child, Node) and next.name != 'chamada_funcao':
+    #             queue.append(child)
     return (func.func, args)
 
 percorreArvore(root)

@@ -34,7 +34,7 @@ def symbols(node: tree.Node):
                         symbols_table.append(var)
                         params.append({'data_type': child.children[0], 'id': child.children[1].children[0]})
                 
-                if len(lista_param.children) > 0 and lista_param.children[0] == 'lista_parametros':
+                if len(lista_param.children) > 0 and lista_param.children[0].name == 'lista_parametros':
                     lista_param = lista_param.children[0]
                 else:
                     break    
@@ -97,7 +97,7 @@ def symbols(node: tree.Node):
                             print('Erro semântico: Esta variável já foi declarada. ->', id, 'escopo', scope)
                             return False
                         symbols_table.append(symbol)
-                if lista_var.children[0] == 'lista_variaveis':
+                if lista_var.children[0].name == 'lista_variaveis':
                     lista_var = lista_var.children[0]
                 else:
                     break
@@ -160,8 +160,18 @@ def symbols(node: tree.Node):
             return False
 
         if node.children[2].name == 'lista_argumentos':
-            for child in node.children[2].children:
-                args.append(check_type(child))
+            lista_arg = node.children[2]
+            next = lista_arg
+            while True:
+                for child in lista_arg.children:
+                    if child.name == 'lista_argumentos':
+                        next = child
+                    else:
+                        args.append(check_type(child))
+                if next != lista_arg:
+                    lista_arg = next
+                else:
+                    break
                 # if child.name == 'ID':
                 #     arg = child.children[0]
                 #     symbol = table_contains(arg, type='var')
@@ -186,6 +196,7 @@ def symbols(node: tree.Node):
             args.append(check_type(node.children[2]))
         
         if len(args) != len(function['params']):
+            print(args, function['params'])
             print("Erro semântico: Numero de argumentos não combina. ->", id)
             return False
         else:
